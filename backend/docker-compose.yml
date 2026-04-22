@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    container_name: logpro-backend
+    ports:
+      - "60001:60001"
+    volumes:
+      # 持久化数据库文件到宿主机，避免容器重启数据丢失
+      - ./db:/app/db
+    environment:
+      - NODE_ENV=production
+      - PORT=60001
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:${PORT:-60001}/api/quotes",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

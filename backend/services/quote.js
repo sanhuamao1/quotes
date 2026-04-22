@@ -1,0 +1,70 @@
+const quoteRepository = require("../repositories/quote");
+const tagRepository = require("../repositories/tag");
+const BusinessError = require("../utils/BusinessError");
+
+class QuoteService {
+  async createQuote(content, tags = []) {
+    try {
+      const { quoteId, tagIds } = await Promise.resolve(
+        quoteRepository.createQuoteWithTags(content, tags),
+      );
+      return { id: quoteId, tags };
+    } catch (error) {
+      throw new BusinessError("创建摘抄失败，请稍后重试", -1, 500);
+    }
+  }
+
+  async getQuotes(page = 1, pageSize = 20, tagIds = null, keyword = null) {
+    try {
+      const result = await Promise.resolve(
+        quoteRepository.getQuotesWithTags({ page, pageSize, tagIds, keyword }),
+      );
+      return result;
+    } catch (error) {
+      throw new BusinessError("查询摘抄失败，请稍后重试", -1, 500);
+    }
+  }
+
+  async getQuoteById(id) {
+    try {
+      const quote = await Promise.resolve(quoteRepository.getQuoteWithTags(id));
+      if (!quote) {
+        throw new BusinessError("摘抄不存在", -1, 404);
+      }
+      return quote;
+    } catch (error) {
+      if (error instanceof BusinessError) throw error;
+      throw new BusinessError("查询摘抄详情失败", -1, 500);
+    }
+  }
+
+  async updateQuote(id, content, tags = []) {
+    try {
+      const changes = await Promise.resolve(
+        quoteRepository.updateQuoteWithTags(id, content, tags),
+      );
+      if (changes === 0) {
+        throw new BusinessError("摘抄不存在", -1, 404);
+      }
+      return { id, tags };
+    } catch (error) {
+      if (error instanceof BusinessError) throw error;
+      throw new BusinessError("更新摘抄失败，请稍后重试", -1, 500);
+    }
+  }
+
+  async deleteQuote(id) {
+    try {
+      const changes = await Promise.resolve(quoteRepository.deleteQuote(id));
+      if (changes === 0) {
+        throw new BusinessError("摘抄不存在", -1, 404);
+      }
+      return { success: true };
+    } catch (error) {
+      if (error instanceof BusinessError) throw error;
+      throw new BusinessError("删除摘抄失败", -1, 500);
+    }
+  }
+}
+
+module.exports = new QuoteService();

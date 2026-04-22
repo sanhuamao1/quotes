@@ -1,0 +1,1307 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>词摘 - 设计预览</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", sans-serif;
+        background: #f5f5f5;
+        padding: 40px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        justify-content: center;
+      }
+
+      .page-title {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 24px;
+      }
+
+      /* 手机框样式 */
+      .phone-frame {
+        width: 375px;
+        height: 812px;
+        background: #fff;
+        border-radius: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        position: relative;
+        border: 12px solid #1a1a1a;
+      }
+
+      .phone-notch {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 30px;
+        background: #1a1a1a;
+        border-radius: 0 0 20px 20px;
+        z-index: 100;
+      }
+
+      .screen {
+        width: 100%;
+        height: 100%;
+        background: #faf8f5;
+        overflow-y: auto;
+        padding-top: 50px;
+        padding-bottom: 80px;
+      }
+
+      /* 状态栏 */
+      .status-bar {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 25px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a1a;
+        z-index: 99;
+      }
+
+      /* 底部导航 */
+      .tab-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background: #fff;
+        border-top: 1px solid #e8e8e8;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: 20px;
+        z-index: 100;
+      }
+
+      .tab-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #999;
+        font-size: 11px;
+      }
+
+      .tab-item.active {
+        color: #8b7355;
+      }
+
+      .tab-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.3;
+      }
+
+      .tab-item.active .tab-icon {
+        opacity: 1;
+      }
+
+      /* ===== 页面1：记录页 ===== */
+      .record-page {
+        padding: 20px;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .page-header h1 {
+        font-size: 20px;
+        color: #333;
+        font-weight: 500;
+        letter-spacing: 2px;
+      }
+
+      .input-section {
+        margin-bottom: 25px;
+      }
+
+      .input-label {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .content-input {
+        width: 100%;
+        min-height: 280px;
+        padding: 20px;
+        border: 1px solid #e0d5c7;
+        border-radius: 12px;
+        background: #fff;
+        font-size: 16px;
+        line-height: 1.8;
+        color: #333;
+        resize: none;
+        font-family: "PingFang SC", "Noto Serif SC", serif;
+      }
+
+      .content-input::placeholder {
+        color: #bbb;
+      }
+
+      /* 标签输入区 */
+      .tag-section {
+        margin-bottom: 30px;
+      }
+
+      .tag-input-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+        background: #fff;
+        border: 1px solid #e0d5c7;
+        border-radius: 12px;
+        min-height: 50px;
+        align-items: center;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: #f0ebe5;
+        color: #8b7355;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      .tag-remove {
+        width: 16px;
+        height: 16px;
+        background: #ccc;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #fff;
+      }
+
+      .tag-input {
+        border: none;
+        outline: none;
+        font-size: 14px;
+        flex: 1;
+        min-width: 80px;
+        padding: 6px;
+      }
+
+      .tag-hint {
+        font-size: 12px;
+        color: #999;
+        margin-top: 8px;
+        padding-left: 4px;
+      }
+
+      /* 保存按钮 */
+      .save-btn {
+        width: 100%;
+        padding: 16px;
+        background: #8b7355;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 2px;
+        cursor: pointer;
+      }
+
+      /* 标签联想下拉 */
+      .tag-suggestion {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #e0d5c7;
+        border-radius: 8px;
+        margin-top: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+
+      .tag-suggestion-item {
+        padding: 12px 16px;
+        font-size: 14px;
+        color: #666;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .tag-suggestion-item:last-child {
+        border-bottom: none;
+      }
+
+      /* ===== 页面2：浏览页 ===== */
+      .browse-page {
+        padding: 15px;
+      }
+
+      .search-section {
+        margin-bottom: 15px;
+      }
+
+      .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: #fff;
+        border-radius: 25px;
+        border: 1px solid #e0d5c7;
+      }
+
+      .search-icon {
+        width: 18px;
+        height: 18px;
+        background: #ccc;
+        border-radius: 50%;
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .search-input::placeholder {
+        color: #bbb;
+      }
+
+      /* 标签筛选 */
+      .filter-section {
+        margin-bottom: 20px;
+      }
+
+      .filter-title {
+        font-size: 13px;
+        color: #999;
+        margin-bottom: 10px;
+      }
+
+      .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .filter-tag {
+        padding: 6px 14px;
+        background: #fff;
+        border: 1px solid #e0d5c7;
+        border-radius: 20px;
+        font-size: 13px;
+        color: #666;
+      }
+
+      .filter-tag.active {
+        background: #8b7355;
+        color: #fff;
+        border-color: #8b7355;
+      }
+
+      /* 摘抄卡片 */
+      .quote-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+
+      .quote-content {
+        font-size: 15px;
+        line-height: 1.8;
+        color: #333;
+        margin-bottom: 15px;
+        font-family: "PingFang SC", "Noto Serif SC", serif;
+      }
+
+      .quote-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .quote-tags {
+        display: flex;
+        gap: 6px;
+      }
+
+      .quote-tag {
+        padding: 4px 10px;
+        background: #f5f0eb;
+        color: #8b7355;
+        border-radius: 12px;
+        font-size: 12px;
+      }
+
+      .quote-time {
+        font-size: 12px;
+        color: #bbb;
+      }
+
+      /* ===== 页面3：标签页 ===== */
+      .tags-page {
+        padding: 20px;
+      }
+
+      .tags-stats {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 16px;
+      }
+
+      .stat-item {
+        flex: 1;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+        color: #8b7355;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #999;
+        margin-top: 4px;
+      }
+
+      .tags-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .cloud-tag {
+        padding: 10px 18px;
+        background: #fff;
+        border-radius: 24px;
+        font-size: 14px;
+        color: #666;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      }
+
+      .cloud-tag.large {
+        font-size: 16px;
+        padding: 12px 22px;
+      }
+
+      .cloud-tag.small {
+        font-size: 13px;
+        padding: 8px 14px;
+      }
+
+      /* ===== 页面4：我的 ===== */
+      .profile-page {
+        padding: 20px;
+      }
+
+      .profile-header {
+        text-align: center;
+        padding: 30px 0;
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #e0d5c7, #c9b8a5);
+        border-radius: 50%;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: #fff;
+      }
+
+      .profile-name {
+        font-size: 18px;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .menu-list {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      .menu-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 20px;
+        border-bottom: 1px solid #f5f5f5;
+      }
+
+      .menu-item:last-child {
+        border-bottom: none;
+      }
+
+      .menu-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .menu-icon {
+        width: 24px;
+        height: 24px;
+        background: #f0ebe5;
+        border-radius: 6px;
+      }
+
+      .menu-text {
+        font-size: 15px;
+        color: #333;
+      }
+
+      .menu-arrow {
+        width: 8px;
+        height: 8px;
+        border-top: 2px solid #ccc;
+        border-right: 2px solid #ccc;
+        transform: rotate(45deg);
+      }
+
+      .page-label {
+        position: absolute;
+        bottom: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        color: #666;
+        white-space: nowrap;
+      }
+
+      .phone-wrapper {
+        position: relative;
+      }
+
+      /* ===== 新的标签选择样式 ===== */
+      .tag-trigger {
+        padding: 12px;
+        background: #fff;
+        border: 1px solid #e0d5c7;
+        border-radius: 12px;
+        cursor: pointer;
+        min-height: 50px;
+      }
+
+      .selected-tags-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .preview-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        background: #f0ebe5;
+        color: #8b7355;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      .preview-empty {
+        color: #bbb;
+        font-size: 14px;
+      }
+
+      /* 抽屉样式 */
+      .tag-drawer {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100%;
+        background: #faf8f5;
+        z-index: 1000;
+        transition: right 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .tag-drawer.active {
+        right: 0;
+      }
+
+      .tag-drawer-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+      }
+
+      .tag-drawer-overlay.active {
+        display: block;
+      }
+
+      .drawer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #fff;
+      }
+
+      .drawer-title {
+        font-size: 18px;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .drawer-close {
+        font-size: 24px;
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      .drawer-close:hover {
+        background: #f5f5f5;
+      }
+
+      .drawer-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .section-label {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      /* 已选标签区 */
+      .selected-tags-section {
+        margin-bottom: 25px;
+      }
+
+      .selected-tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        min-height: 40px;
+      }
+
+      .selected-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: #8b7355;
+        color: #fff;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      .selected-tag.empty {
+        background: #f5f5f5;
+        color: #999;
+      }
+
+      /* 添加新标签区 */
+      .add-tag-section {
+        margin-bottom: 25px;
+        width: calc(100% - 20px);
+      }
+
+      .add-tag-input-wrapper {
+        display: flex;
+        gap: 10px;
+      }
+
+      .add-tag-input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid #e0d5c7;
+        border-radius: 12px;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .add-tag-input:focus {
+        outline: none;
+        border-color: #8b7355;
+      }
+
+      .add-tag-btn {
+        width: 48px;
+        height: 48px;
+        background: #8b7355;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .add-tag-btn:hover {
+        background: #7a6345;
+      }
+
+      /* 所有标签列表 */
+      .all-tags-section {
+        margin-bottom: 20px;
+      }
+
+      .all-tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .tag-checkbox {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        background: #fff;
+        border: 1px solid #e0d5c7;
+        border-radius: 20px;
+        font-size: 14px;
+        color: #666;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .tag-checkbox:hover {
+        border-color: #8b7355;
+      }
+
+      .tag-checkbox input[type="checkbox"] {
+        display: none;
+      }
+
+      .tag-checkbox input[type="checkbox"]:checked + .checkbox-label {
+        color: #8b7355;
+        font-weight: 500;
+      }
+
+      .tag-checkbox input[type="checkbox"]:checked + .checkbox-label::before {
+        content: "✓ ";
+        color: #8b7355;
+      }
+
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="page-title">词摘 APP - 页面设计预览</h1>
+
+    <!-- 页面1：记录页 -->
+    <div class="phone-wrapper">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋</span>
+        </div>
+        <div class="screen">
+          <div class="record-page">
+            <div class="page-header">
+              <h1>记录</h1>
+            </div>
+
+            <div class="input-section">
+              <label class="input-label">摘抄内容</label>
+              <textarea
+                class="content-input"
+                placeholder="在此输入触动你的文字..."
+              >
+寒塘渡鹤影，冷月葬花魂。</textarea
+              >
+            </div>
+
+            <div class="tag-section">
+              <label class="input-label">标签</label>
+              <div class="tag-trigger" onclick="openTagDrawer()">
+                <div class="selected-tags-preview">
+                  <span class="preview-tag">意境</span>
+                  <span class="preview-tag">诗句</span>
+                  <span class="preview-empty">点击选择标签...</span>
+                </div>
+              </div>
+
+              <!-- 标签选择抽屉 -->
+              <div class="tag-drawer" id="tagDrawer">
+                <div class="drawer-header">
+                  <div class="drawer-title">选择标签</div>
+                  <button class="drawer-close" onclick="closeTagDrawer()">
+                    ×
+                  </button>
+                </div>
+
+                <div class="drawer-content">
+                  <!-- 已选标签区 -->
+                  <div class="selected-tags-section">
+                    <div class="section-label">已选标签</div>
+                    <div class="selected-tags-list">
+                      <span class="selected-tag">
+                        意境
+                        <span
+                          class="tag-remove"
+                          onclick="removeSelectedTag('意境')"
+                          >×</span
+                        >
+                      </span>
+                      <span class="selected-tag">
+                        诗句
+                        <span
+                          class="tag-remove"
+                          onclick="removeSelectedTag('诗句')"
+                          >×</span
+                        >
+                      </span>
+                      <span class="selected-tag empty">暂无标签</span>
+                    </div>
+                  </div>
+
+                  <!-- 添加新标签区 -->
+                  <div class="add-tag-section">
+                    <div class="section-label">添加标签</div>
+                    <div class="add-tag-input-wrapper">
+                      <input
+                        type="text"
+                        class="add-tag-input"
+                        placeholder="搜索或输入新标签..."
+                        id="newTagInput"
+                      />
+                      <button class="add-tag-btn" onclick="addNewTag()">
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- 所有标签列表 -->
+                  <div class="all-tags-section">
+                    <div class="section-label">所有标签</div>
+                    <div class="all-tags-list">
+                      <label class="tag-checkbox">
+                        <input
+                          type="checkbox"
+                          checked
+                          onclick="toggleTag('意境')"
+                        />
+                        <span class="checkbox-label">意境</span>
+                      </label>
+                      <label class="tag-checkbox">
+                        <input
+                          type="checkbox"
+                          checked
+                          onclick="toggleTag('诗句')"
+                        />
+                        <span class="checkbox-label">诗句</span>
+                      </label>
+                      <label class="tag-checkbox">
+                        <input type="checkbox" onclick="toggleTag('悲情')" />
+                        <span class="checkbox-label">悲情</span>
+                      </label>
+                      <label class="tag-checkbox">
+                        <input type="checkbox" onclick="toggleTag('描写')" />
+                        <span class="checkbox-label">描写</span>
+                      </label>
+                      <label class="tag-checkbox">
+                        <input type="checkbox" onclick="toggleTag('比喻')" />
+                        <span class="checkbox-label">比喻</span>
+                      </label>
+                      <label class="tag-checkbox">
+                        <input type="checkbox" onclick="toggleTag('哲理')" />
+                        <span class="checkbox-label">哲理</span>
+                      </label>
+                      <label class="tag-checkbox">
+                        <input type="checkbox" onclick="toggleTag('人物')" />
+                        <span class="checkbox-label">人物</span>
+                      </label>
+                      <label class="tag-checkbox">
+                        <input type="checkbox" onclick="toggleTag('场景')" />
+                        <span class="checkbox-label">场景</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="tag-drawer-overlay"
+                id="tagDrawerOverlay"
+                onclick="closeTagDrawer()"
+              ></div>
+            </div>
+
+            <button class="save-btn">保存</button>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item active">
+            <div class="tab-icon"></div>
+            <span>记录</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>浏览</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>标签</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>我的</span>
+          </div>
+        </div>
+      </div>
+      <div class="page-label">页面1：记录页</div>
+    </div>
+
+    <!-- 页面2：浏览页 -->
+    <div class="phone-wrapper">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋</span>
+        </div>
+        <div class="screen">
+          <div class="browse-page">
+            <div class="search-section">
+              <div class="search-bar">
+                <div class="search-icon"></div>
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="搜索摘抄内容..."
+                />
+              </div>
+            </div>
+
+            <div class="filter-section">
+              <div class="filter-title">标签筛选</div>
+              <div class="filter-tags">
+                <span class="filter-tag active">意境</span>
+                <span class="filter-tag active">诗句</span>
+                <span class="filter-tag">对话</span>
+                <span class="filter-tag">描写</span>
+                <span class="filter-tag">修辞</span>
+              </div>
+            </div>
+
+            <div class="quote-card">
+              <div class="quote-content">寒塘渡鹤影，冷月葬花魂。</div>
+              <div class="quote-footer">
+                <div class="quote-tags">
+                  <span class="quote-tag">意境</span>
+                  <span class="quote-tag">诗句</span>
+                  <span class="quote-tag">悲情</span>
+                </div>
+                <span class="quote-time">今天 14:32</span>
+              </div>
+            </div>
+
+            <div class="quote-card">
+              <div class="quote-content">人生如逆旅，我亦是行人。</div>
+              <div class="quote-footer">
+                <div class="quote-tags">
+                  <span class="quote-tag">意境</span>
+                  <span class="quote-tag">哲理</span>
+                </div>
+                <span class="quote-time">昨天 20:15</span>
+              </div>
+            </div>
+
+            <div class="quote-card">
+              <div class="quote-content">愿你出走半生，归来仍是少年。</div>
+              <div class="quote-footer">
+                <div class="quote-tags">
+                  <span class="quote-tag">祝福</span>
+                  <span class="quote-tag">诗句</span>
+                </div>
+                <span class="quote-time">3天前</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>记录</span>
+          </div>
+          <div class="tab-item active">
+            <div class="tab-icon"></div>
+            <span>浏览</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>标签</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>我的</span>
+          </div>
+        </div>
+      </div>
+      <div class="page-label">页面2：浏览页</div>
+    </div>
+
+    <!-- 页面3：标签页 -->
+    <div class="phone-wrapper">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋</span>
+        </div>
+        <div class="screen">
+          <div class="tags-page">
+            <div class="page-header">
+              <h1>标签</h1>
+            </div>
+
+            <div class="tags-stats">
+              <div class="stat-item">
+                <div class="stat-number">128</div>
+                <div class="stat-label">摘抄</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">24</div>
+                <div class="stat-label">标签</div>
+              </div>
+            </div>
+
+            <div class="tags-cloud">
+              <span class="cloud-tag large">意境</span>
+              <span class="cloud-tag">诗句</span>
+              <span class="cloud-tag small">对话</span>
+              <span class="cloud-tag">描写</span>
+              <span class="cloud-tag large">修辞</span>
+              <span class="cloud-tag">比喻</span>
+              <span class="cloud-tag small">哲理</span>
+              <span class="cloud-tag">人物</span>
+              <span class="cloud-tag">场景</span>
+              <span class="cloud-tag large">情感</span>
+              <span class="cloud-tag">动作</span>
+              <span class="cloud-tag small">心理</span>
+              <span class="cloud-tag">环境</span>
+              <span class="cloud-tag">古风</span>
+              <span class="cloud-tag large">金句</span>
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>记录</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>浏览</span>
+          </div>
+          <div class="tab-item active">
+            <div class="tab-icon"></div>
+            <span>标签</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>我的</span>
+          </div>
+        </div>
+      </div>
+      <div class="page-label">页面3：标签页</div>
+    </div>
+
+    <!-- 页面4：我的 -->
+    <div class="phone-wrapper">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 🔋</span>
+        </div>
+        <div class="screen">
+          <div class="profile-page">
+            <div class="profile-header">
+              <div class="avatar">词</div>
+              <div class="profile-name">词摘用户</div>
+            </div>
+
+            <div class="menu-list">
+              <div class="menu-item">
+                <div class="menu-left">
+                  <div class="menu-icon"></div>
+                  <span class="menu-text">数据导出</span>
+                </div>
+                <div class="menu-arrow"></div>
+              </div>
+              <div class="menu-item">
+                <div class="menu-left">
+                  <div class="menu-icon"></div>
+                  <span class="menu-text">标签管理</span>
+                </div>
+                <div class="menu-arrow"></div>
+              </div>
+              <div class="menu-item">
+                <div class="menu-left">
+                  <div class="menu-icon"></div>
+                  <span class="menu-text">回收站</span>
+                </div>
+                <div class="menu-arrow"></div>
+              </div>
+              <div class="menu-item">
+                <div class="menu-left">
+                  <div class="menu-icon"></div>
+                  <span class="menu-text">设置</span>
+                </div>
+                <div class="menu-arrow"></div>
+              </div>
+              <div class="menu-item">
+                <div class="menu-left">
+                  <div class="menu-icon"></div>
+                  <span class="menu-text">关于</span>
+                </div>
+                <div class="menu-arrow"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-bar">
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>记录</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>浏览</span>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon"></div>
+            <span>标签</span>
+          </div>
+          <div class="tab-item active">
+            <div class="tab-icon"></div>
+            <span>我的</span>
+          </div>
+        </div>
+      </div>
+      <div class="page-label">页面4：我的</div>
+    </div>
+
+    <script>
+      // 标签选择器状态
+      let selectedTags = ["意境", "诗句"];
+      let allTags = [
+        "意境",
+        "诗句",
+        "悲情",
+        "描写",
+        "比喻",
+        "哲理",
+        "人物",
+        "场景",
+      ];
+
+      // 打开标签抽屉
+      function openTagDrawer() {
+        document.getElementById("tagDrawer").classList.add("active");
+        document.getElementById("tagDrawerOverlay").classList.add("active");
+      }
+
+      // 关闭标签抽屉
+      function closeTagDrawer() {
+        document.getElementById("tagDrawer").classList.remove("active");
+        document.getElementById("tagDrawerOverlay").classList.remove("active");
+      }
+
+      // 切换标签选择状态
+      function toggleTag(tagName) {
+        const index = selectedTags.indexOf(tagName);
+        if (index === -1) {
+          selectedTags.push(tagName);
+        } else {
+          selectedTags.splice(index, 1);
+        }
+        updateSelectedTagsDisplay();
+        updateCheckboxStates();
+      }
+
+      // 移除已选标签
+      function removeSelectedTag(tagName) {
+        const index = selectedTags.indexOf(tagName);
+        if (index !== -1) {
+          selectedTags.splice(index, 1);
+          updateSelectedTagsDisplay();
+          updateCheckboxStates();
+        }
+      }
+
+      // 添加新标签
+      function addNewTag() {
+        const input = document.getElementById("newTagInput");
+        const newTag = input.value.trim();
+
+        if (newTag && !allTags.includes(newTag)) {
+          allTags.push(newTag);
+          selectedTags.push(newTag);
+          input.value = "";
+
+          // 更新标签列表
+          updateAllTagsList();
+          updateSelectedTagsDisplay();
+          updateCheckboxStates();
+        } else if (newTag && allTags.includes(newTag)) {
+          // 如果标签已存在，直接选中
+          if (!selectedTags.includes(newTag)) {
+            selectedTags.push(newTag);
+            updateSelectedTagsDisplay();
+            updateCheckboxStates();
+          }
+          input.value = "";
+        }
+      }
+
+      // 更新已选标签显示
+      function updateSelectedTagsDisplay() {
+        const previewContainer = document.querySelector(
+          ".selected-tags-preview",
+        );
+        const drawerContainer = document.querySelector(".selected-tags-list");
+
+        // 更新预览区
+        previewContainer.innerHTML = "";
+        if (selectedTags.length > 0) {
+          selectedTags.forEach((tag) => {
+            const tagEl = document.createElement("span");
+            tagEl.className = "preview-tag";
+            tagEl.textContent = tag;
+            previewContainer.appendChild(tagEl);
+          });
+        } else {
+          const emptyEl = document.createElement("span");
+          emptyEl.className = "preview-empty";
+          emptyEl.textContent = "点击选择标签...";
+          previewContainer.appendChild(emptyEl);
+        }
+
+        // 更新抽屉中的已选标签
+        drawerContainer.innerHTML = "";
+        if (selectedTags.length > 0) {
+          selectedTags.forEach((tag) => {
+            const tagEl = document.createElement("span");
+            tagEl.className = "selected-tag";
+            tagEl.innerHTML = `${tag}<span class="tag-remove" onclick="removeSelectedTag('${tag}')">×</span>`;
+            drawerContainer.appendChild(tagEl);
+          });
+        } else {
+          const emptyEl = document.createElement("span");
+          emptyEl.className = "selected-tag empty";
+          emptyEl.textContent = "暂无标签";
+          drawerContainer.appendChild(emptyEl);
+        }
+      }
+
+      // 更新所有标签列表
+      function updateAllTagsList() {
+        const container = document.querySelector(".all-tags-list");
+        container.innerHTML = "";
+
+        allTags.forEach((tag) => {
+          const label = document.createElement("label");
+          label.className = "tag-checkbox";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = selectedTags.includes(tag);
+          checkbox.onclick = () => toggleTag(tag);
+
+          const span = document.createElement("span");
+          span.className = "checkbox-label";
+          span.textContent = tag;
+
+          label.appendChild(checkbox);
+          label.appendChild(span);
+          container.appendChild(label);
+        });
+      }
+
+      // 更新复选框状态
+      function updateCheckboxStates() {
+        document
+          .querySelectorAll('.tag-checkbox input[type="checkbox"]')
+          .forEach((checkbox) => {
+            const tagName = checkbox.nextElementSibling.textContent;
+            checkbox.checked = selectedTags.includes(tagName);
+          });
+      }
+
+      // 输入框回车键支持
+      document
+        .getElementById("newTagInput")
+        ?.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            addNewTag();
+          }
+        });
+
+      // 初始化显示
+      updateSelectedTagsDisplay();
+      updateAllTagsList();
+    </script>
+  </body>
+</html>

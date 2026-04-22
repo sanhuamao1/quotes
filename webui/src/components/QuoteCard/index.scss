@@ -1,0 +1,42 @@
+@use "../../style/varieties.scss" as *;
+
+.quote-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.quote-content {
+  font-size: 32px;
+  line-height: 1.8;
+  color: $text-primary;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.quote-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quote-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.quote-tag {
+  padding: 8px 20px;
+  background: $primary-light;
+  border-radius: 24px;
+  font-size: 24px;
+  color: $primary-color;
+}
+
+.quote-time {
+  font-size: 24px;
+  color: $text-muted;
+}

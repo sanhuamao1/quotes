@@ -1,0 +1,48 @@
+// 创建摘抄请求
+export interface CreateQuoteRequest {
+  content: string;
+  tags: string[];
+}
+
+// 更新摘抄请求
+export interface UpdateQuoteRequest {
+  id: string;
+  content?: string;
+  tagIds?: string[];
+}
+
+// 标签
+export interface Tag {
+  id: string;
+  name: string;
+  count?: number; // 使用次数
+  color?: string; // 标签颜色
+}
+
+export interface Quote {
+  id: string;
+  content: string;
+  tags: Tag[];
+  updatedAt: string;
+}
+
+// 统计数据
+export interface Stats {
+  totalQuotes: number;
+  totalTags: number;
+}
+
+// 摘抄列表查询参数
+export interface QuoteQueryParams {
+  keyword?: string;
+  tagIds?: string[];
+  page?: number;
+  pageSize?: number;
+}
+
+export interface Pagination {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}

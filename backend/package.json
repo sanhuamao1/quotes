@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Koa backend for record and tag management",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "@koa/router": "^12.0.0",
+    "better-sqlite3": "^12.9.0",
+    "joi": "^18.1.2",
+    "koa": "^2.15.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

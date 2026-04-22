@@ -1,0 +1,76 @@
+@use "../../style/varieties.scss" as *;
+
+.record-page {
+  min-height: 100vh;
+  background: $bg-color;
+  padding: 32px;
+}
+
+.input-section {
+  margin-bottom: 40px;
+}
+
+.section-label {
+  font-size: 28px;
+  color: $text-secondary;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.content-input {
+  width: 100%;
+  min-height: 400px;
+  padding: 24px;
+  background: #fff;
+  border-radius: 20px;
+  font-size: 32px;
+  line-height: 1.8;
+  color: $text-primary;
+  box-sizing: border-box;
+}
+
+.tags-display {
+  padding: 24px;
+  background: #fff;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.tags-placeholder {
+  font-size: 28px;
+  color: $text-muted;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.selected-tag {
+  padding: $tag-padding;
+  background: $primary-light;
+  border-radius: 32px;
+  font-size: 26px;
+  color: $primary-color;
+}
+
+.save-btn {
+  width: 100%;
+  height: 96px;
+  line-height: 96px;
+  background: $primary-color;
+  color: #fff;
+  font-size: 32px;
+  border-radius: 48px;
+  margin-top: 48px;
+
+  &[disabled] {
+    opacity: 0.6;
+  }
+
+  &::after {
+    border: none;
+  }
+}
