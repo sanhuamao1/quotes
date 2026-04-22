@@ -4,7 +4,6 @@ const quoteRoute = require("./routes/quote");
 const tagRoute = require("./routes/tag");
 const errorMw = require("./middlewares/errorMw");
 const corsMw = require("./middlewares/crosMw");
-require("dotenv").config();
 
 const initDatabase = require("./db/init");
 initDatabase();
@@ -42,7 +41,7 @@ apiRouter.use(tagRoute.routes(), tagRoute.allowedMethods());
 app.use(apiRouter.routes());
 
 // 启动服务器
-const PORT = process.env.PORT;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

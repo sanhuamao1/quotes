@@ -2,7 +2,7 @@
 const Database = require("better-sqlite3");
 const path = require("path");
 
-const dbPath = path.join(__dirname, "finance.db");
+const dbPath = path.join(__dirname, "index.db");
 let db = null;
 
 function getDB() {
