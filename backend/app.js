@@ -33,6 +33,16 @@ app.use(async (ctx, next) => {
 // 创建主路由，添加 /api 前缀
 const apiRouter = new Router({ prefix: "/api" });
 
+// 健康检查接口
+apiRouter.get("/health", (ctx) => {
+  ctx.body = {
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    service: "logpro-backend",
+    version: "1.0.0",
+  };
+});
+
 // 注册子路由
 apiRouter.use(quoteRoute.routes(), quoteRoute.allowedMethods());
 apiRouter.use(tagRoute.routes(), tagRoute.allowedMethods());
