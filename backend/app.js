@@ -8,6 +8,8 @@ const corsMw = require("./middlewares/crosMw");
 const initDatabase = require("./db/init");
 initDatabase();
 
+require("dotenv").config();
+
 const app = new Koa();
 
 // 全局错误处理中间件
@@ -51,7 +53,7 @@ apiRouter.use(tagRoute.routes(), tagRoute.allowedMethods());
 app.use(apiRouter.routes());
 
 // 启动服务器
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
