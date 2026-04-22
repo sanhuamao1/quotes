@@ -1,10 +1,12 @@
-import Taro from '@tarojs/taro';
+import Taro from "@tarojs/taro";
 
-const BASE_URL = 'http://localhost:3000/api';
+// 从环境变量获取 API 地址
+const BASE_URL =
+  process.env.TARO_APP_API_BASE_URL || "http://localhost:3000/api";
 
 interface RequestOptions<T = any> {
   url: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: "GET" | "POST" | "PUT" | "DELETE";
   data?: T;
   header?: Record<string, string>;
 }
@@ -15,13 +17,11 @@ interface ApiResponse<T = any> {
   message?: string;
 }
 
-export async function request<T = any>(
-  options: RequestOptions
-): Promise<T> {
-  const { url, method = 'GET', data, header = {} } = options;
+export async function request<T = any>(options: RequestOptions): Promise<T> {
+  const { url, method = "GET", data, header = {} } = options;
 
   // 获取token（如需要）
-  const token = Taro.getStorageSync('token');
+  const token = Taro.getStorageSync("token");
 
   try {
     const res = await Taro.request<ApiResponse<T>>({
@@ -29,7 +29,7 @@ export async function request<T = any>(
       method,
       data,
       header: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...header,
       },
@@ -42,8 +42,8 @@ export async function request<T = any>(
     throw new Error(res.data.message || `请求失败: ${res.statusCode}`);
   } catch (error: any) {
     Taro.showToast({
-      title: error.message || '网络错误',
-      icon: 'none',
+      title: error.message || "网络错误",
+      icon: "none",
     });
     throw error;
   }
