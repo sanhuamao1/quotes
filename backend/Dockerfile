@@ -4,9 +4,7 @@ FROM node:20-alpine
 # 设置工作目录
 WORKDIR /app
 
-RUN echo "http://mirrors.aliyun.com/alpine/v3.18/main" > /etc/apk/repositories && \
-    echo "http://mirrors.aliyun.com/alpine/v3.18/community" >> /etc/apk/repositories && \
-    apk update
+RUN npm config set registry https://registry.npmmirror.com/
 
 # 安装构建依赖（用于编译 better-sqlite3）
 RUN apk add --no-cache python3 make g++
