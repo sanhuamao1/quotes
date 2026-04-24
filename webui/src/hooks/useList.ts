@@ -6,7 +6,8 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-import type { Pagination } from "../types";
+import type { Pagination, ListApi } from "../types";
+import { getQuotes, GetQuotesApi } from "../request";
 
 interface UseQuotesListReturn<T, U> {
   list: U[];
@@ -20,11 +21,14 @@ interface UseQuotesListReturn<T, U> {
   setFilter: (newFilter: T) => void;
 }
 
+type ListType = "quotes";
+const listTypeMap: Record<ListType, ListApi<any, any>> = {
+  quotes: getQuotes,
+};
+
 export function useList<T, U>(
   initialFilter: T,
-  getFunc: (
-    params: T & { page: number; pageSize: number },
-  ) => Promise<{ list: U[]; pagination: Pagination }>,
+  listType: ListType,
   pageSize = 8,
 ): UseQuotesListReturn<T, U> {
   const [list, setList] = useState<U[]>([]);
@@ -49,7 +53,7 @@ export function useList<T, U>(
         page,
         pageSize,
       };
-      const data = await getFunc(params);
+      const data = await listTypeMap[listType](params);
       const { list, pagination: pag } = data;
 
       if (isLoadMore) {

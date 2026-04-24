@@ -1,5 +1,5 @@
 // 全局变量
-@use "./style/varieties.scss" as *;
+@use "@/style/varieties.scss" as *;
 
 page {
   font-family:
@@ -51,4 +51,38 @@ page {
 .tab-text {
   font-size: 24px;
   color: $text-secondary;
+}
+
+// 输入框
+.base-input-section {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+
+  .base-input {
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+    flex: 1;
+    height: 80rpx;
+    border-radius: $base-radius;
+    box-sizing: border-box;
+    padding: 0 24rpx;
+    background: #fff;
+
+    &.round {
+      border-radius: 64rpx;
+      background: $bg-color;
+      border: 1px solid $border-color;
+    }
+
+    input {
+      font-size: $base-size;
+      color: $text-primary;
+      &::placeholder {
+        color: $text-muted;
+      }
+    }
+  }
 }

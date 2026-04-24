@@ -1,11 +1,31 @@
-import { View, Text, Input, ScrollView } from "@tarojs/components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Taro from "@tarojs/taro";
+
+import {
+  View,
+  Text,
+  Input,
+  ScrollView,
+  PageContainer,
+  Icon,
+} from "@tarojs/components";
 import QuoteCard from "../../components/QuoteCard";
-import { getQuotes, getTags, deleteQuote } from "../../request";
-import type { Quote, Tag } from "../../types";
-import "./index.scss";
+import RecordDrawer from "../../components/RecordDrawer";
+import { type Tag as TagType } from "../../types";
+import Button from "../../components/Button";
+
+import { deleteQuote } from "../../request";
+import type { Quote } from "../../types";
 import { useList } from "../../hooks/useList";
+import { useAppStore } from "../../store/useAppStore";
+import TagSelectorButton from "../../components/TagSelectorButton";
+import "./index.scss";
+
+const ACTION = {
+  EMPTY: 0,
+  ADD_QUOTE: 1,
+  SELECT_TAG: 2,
+};
 
 type Filter = {
   keyword?: string;
@@ -13,39 +33,26 @@ type Filter = {
 };
 
 export default function Browse() {
-  const [allTags, setAllTags] = useState<Tag[]>([]);
-  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const { selectedTags, updateSelectedTags } = useAppStore();
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [drawerType, setDrawerType] = useState(ACTION.EMPTY);
 
-  // 使用自定义 Hook
-  const {
-    list,
-    setList,
-    loading,
-    refreshing,
-    loadingMore,
-    hasMore,
-    refresh,
-    loadMore,
-    setFilter,
-  } = useList<Filter, Quote>(
-    { keyword: searchKeyword, tagIds: selectedTagIds },
-    getQuotes,
+  const tagIds = useMemo(
+    () => selectedTags.map((tag) => tag.id),
+    [selectedTags],
   );
 
-  // 处理搜索输入
+  const { list, loading, loadingMore, hasMore, refresh, loadMore, setFilter } =
+    useList<Filter, Quote>({ keyword: searchKeyword, tagIds }, "quotes");
+
   const handleSearchInput = (e: any) => {
     setSearchKeyword(e.detail.value);
   };
 
-  // 点击标签跳转
-  const handleTagClick = (tagId: string) => {
-    Taro.navigateTo({
-      url: `/pages/tags/detail?id=${tagId}`,
-    });
+  const handleTagClick = (tag: TagType) => {
+    updateSelectedTags([...new Set([tag, ...selectedTags])]);
   };
 
-  // 长按卡片删除
   const handleLongPress = (quote: Quote) => {
     Taro.showModal({
       title: "确认删除",
@@ -56,8 +63,7 @@ export default function Browse() {
           try {
             await deleteQuote(quote.id);
             Taro.showToast({ title: "删除成功", icon: "success" });
-            // 从列表中移除已删除的项
-            setList((prev) => prev.filter((q) => q.id !== quote.id));
+            refresh();
           } catch (error) {
             console.error("删除失败:", error);
             Taro.showToast({ title: "删除失败", icon: "none" });
@@ -67,73 +73,35 @@ export default function Browse() {
     });
   };
 
-  // 初始化加载
   useEffect(() => {
-    getTags().then(setAllTags).catch(console.error);
-  }, []);
+    setFilter({ keyword: searchKeyword, tagIds });
+  }, [searchKeyword, tagIds]);
 
-  useEffect(() => {
-    setFilter({ keyword: searchKeyword, tagIds: selectedTagIds });
-  }, [searchKeyword, selectedTagIds]);
-
-  const toggleTag = (tagId: string) => {
-    setSelectedTagIds((prev) =>
-      prev.includes(tagId)
-        ? prev.filter((id) => id !== tagId)
-        : [...prev, tagId],
-    );
+  const handleClose = () => {
+    setDrawerType(ACTION.EMPTY);
+    Taro.showTabBar();
   };
 
   return (
     <View className="browse-page">
-      {/* 搜索框 */}
       <View className="search-section">
-        <View className="search-box">
-          <View className="search-icon" />
-          <Input
-            className="search-input"
-            placeholder="搜索摘抄内容..."
-            value={searchKeyword}
-            onInput={handleSearchInput}
-            confirmType="search"
-          />
+        <View className="base-input-section">
+          <View className="base-input round">
+            <Icon size={18} type="search" className="icon" />
+            <Input
+              placeholder="搜索摘抄内容..."
+              value={searchKeyword}
+              onInput={handleSearchInput}
+            />
+          </View>
         </View>
       </View>
+      <TagSelectorButton />
 
-      {/* 标签筛选 */}
-      <View className="filter-section">
-        <Text className="filter-label">标签筛选</Text>
-        <ScrollView
-          className="tag-filter-scroll"
-          scrollX
-          scrollWithAnimation
-          showScrollbar={false}
-        >
-          <View className="tag-filter-list">
-            {allTags.map((tag) => {
-              const isSelected = selectedTagIds.includes(tag.id);
-              return (
-                <View
-                  key={tag.id}
-                  className={`filter-tag ${isSelected ? "selected" : ""}`}
-                  onClick={() => toggleTag(tag.id)}
-                >
-                  <Text className="filter-tag-text">{tag.name}</Text>
-                </View>
-              );
-            })}
-          </View>
-        </ScrollView>
-      </View>
-
-      {/* 摘抄列表 */}
       <ScrollView
         className="quotes-list"
         scrollY
         scrollWithAnimation
-        refresherEnabled
-        refresherTriggered={refreshing}
-        onRefresherRefresh={refresh}
         onScrollToLower={loadMore}
         lowerThreshold={100}
       >
@@ -148,7 +116,6 @@ export default function Browse() {
           />
         ))}
 
-        {/* 加载更多提示 */}
         {list.length > 0 && (
           <View className="load-more-tip">
             {loadingMore ? (
@@ -164,10 +131,36 @@ export default function Browse() {
         {list.length === 0 && !loading && (
           <View className="empty-state">
             <Text className="empty-text">暂无摘抄记录</Text>
-            <Text className="empty-hint">去记录页添加第一条摘抄吧</Text>
+            <Text className="empty-hint">点击下方 + 按钮添加第一条摘抄吧</Text>
           </View>
         )}
       </ScrollView>
+
+      <Button
+        circle
+        className="fab-btn"
+        width={80}
+        height={80}
+        onClick={() => {
+          setDrawerType(ACTION.ADD_QUOTE);
+
+          Taro.hideTabBar();
+        }}
+      >
+        +
+      </Button>
+
+      <PageContainer
+        show={drawerType !== ACTION.EMPTY}
+        round
+        position="bottom"
+        onAfterLeave={handleClose}
+        onClickOverlay={handleClose}
+      >
+        {drawerType === ACTION.ADD_QUOTE && (
+          <RecordDrawer onClose={handleClose} onRefresh={refresh} />
+        )}
+      </PageContainer>
     </View>
   );
 }

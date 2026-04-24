@@ -11,7 +11,7 @@ interface QuoteCardProps {
   tags: Tag[];
   updatedAt: string;
   onClick?: () => void;
-  onTagClick?: (tagId: string) => void;
+  onTagClick?: (tag: Tag) => void;
   onLongPress?: () => void;
 }
 
@@ -52,10 +52,10 @@ export default function QuoteCard({
               className="quote-tag"
               onClick={(e) => {
                 e.stopPropagation();
-                onTagClick?.(tag.id);
+                onTagClick?.(tag);
               }}
             >
-              <Text>{tag.name}</Text>
+              <Text>#{tag.name}</Text>
             </View>
           ))}
         </View>

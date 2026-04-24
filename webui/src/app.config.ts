@@ -1,16 +1,16 @@
 export default defineAppConfig({
   pages: [
-    "pages/index/index", // 记录页
     "pages/browse/index", // 浏览页
     "pages/tags/index", // 标签页
     "pages/profile/index", // 我的页
   ],
+
   window: {
     backgroundTextStyle: "light",
-    navigationBarBackgroundColor: "#faf8f5",
+    navigationBarBackgroundColor: "#65320708",
     navigationBarTitleText: "词摘",
     navigationBarTextStyle: "black",
-    backgroundColor: "#faf8f5",
+    backgroundColor: "#65320708",
   },
   tabBar: {
     color: "#999",
@@ -18,12 +18,6 @@ export default defineAppConfig({
     backgroundColor: "#fff",
     borderStyle: "white",
     list: [
-      {
-        pagePath: "pages/index/index",
-        text: "记录",
-        iconPath: "assets/icons/record.png",
-        selectedIconPath: "assets/icons/record-active.png",
-      },
       {
         pagePath: "pages/browse/index",
         text: "浏览",

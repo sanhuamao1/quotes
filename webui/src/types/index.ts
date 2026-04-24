@@ -32,17 +32,13 @@ export interface Stats {
   totalTags: number;
 }
 
-// 摘抄列表查询参数
-export interface QuoteQueryParams {
-  keyword?: string;
-  tagIds?: string[];
-  page?: number;
-  pageSize?: number;
-}
-
 export interface Pagination {
   total: number;
   page: number;
   pageSize: number;
   totalPages: number;
 }
+
+export type ListApi<T, U> = (
+  params: T & { page: number; pageSize: number },
+) => Promise<{ list: U[]; pagination: Pagination }>;

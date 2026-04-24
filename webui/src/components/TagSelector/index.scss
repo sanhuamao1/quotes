@@ -1,147 +1,25 @@
 @use "../../style/varieties.scss" as *;
 
-.tag-selector-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: flex;
-  align-items: flex-end;
-}
-
-.tag-selector-drawer {
+.tag-selector-container {
   width: 100%;
-  max-height: 90vh;
-  min-height: 90vh;
-  background: #fff;
-  border-radius: 24px 24px 0 0;
-  display: flex;
-  flex-direction: column;
+  box-sizing: border-box;
 }
 
-.tag-selector-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 32px;
-  border-bottom: 1px solid #f0f0f0;
+// 标签列表区域
+.tag-list-section {
+  margin-top: 24rpx;
 }
 
-.tag-selector-title {
-  font-size: 34px;
-  font-weight: 600;
-  color: $text-primary;
-}
-
-.tag-selector-close {
-  font-size: 48px;
-  color: #999;
-  line-height: 1;
-}
-
-.tag-selector-section {
-  padding: 24px 32px;
-}
-
-.tag-selector-section-title {
-  font-size: 26px;
-  color: #666;
-  margin-bottom: 16px;
-  display: block;
-}
-
-.tag-selector-selected-list {
+// 标签云 - 流式布局
+.tag-cloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 16rpx;
 }
 
-.tag-item {
-  display: inline-flex;
-  align-items: center;
-  padding: $tag-padding;
-  border-radius: 32px;
-  font-size: 28px;
-  background: #f5f5f5;
-  color: #666;
-
-  &--selected {
-    background: #8b7355;
-    color: #fff;
-  }
-
-  &--active {
-    background: #f0e6dc;
-    color: #8b7355;
-  }
-}
-
-.tag-remove {
-  margin-left: 12px;
-  font-size: 24px;
-  opacity: 0.8;
-}
-
-.tag-selector-input-wrap {
-  display: flex;
-  gap: 16px;
-}
-
-.tag-selector-input {
-  flex: 1;
-  height: 80px;
-  padding: 0 24px;
-  border: 2px solid #e0e0e0;
-  border-radius: 16px;
-  font-size: 28px;
-  display: flex;
-  align-items: center;
-}
-
-.tag-selector-add-btn {
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #8b7355;
-  border-radius: 16px;
-  color: #fff;
-  font-size: 40px;
-}
-
-.tag-selector-all-list {
-  flex: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 16px;
-}
-
-.tag-selector-empty {
+// 空状态
+.tag-empty-text {
   width: 100%;
-  text-align: center;
-  color: #999;
-  font-size: 28px;
-  padding: 48px 0;
-}
-
-.tag-selector-footer {
-  padding: 24px 32px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.tag-selector-confirm-btn {
-  height: 88px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #8b7355;
-  border-radius: 44px;
-  color: #fff;
-  font-size: 32px;
-  font-weight: 500;
+  color: $text-muted;
+  font-size: 26rpx;
 }

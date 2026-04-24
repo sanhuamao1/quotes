@@ -1,0 +1,41 @@
+@use "../../style/varieties.scss" as *;
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: $tag-padding;
+  background: #fff;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 24rpx;
+  transition: all 0.2s ease;
+
+  &:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+
+  &--checked {
+    background: #f5f0e6;
+    border-color: $primary-color;
+
+    .tag-pill-text {
+      color: $primary-color;
+      font-weight: 500;
+    }
+  }
+
+  &--selected {
+    background: $primary-color;
+    border-color: $primary-color;
+
+    .tag-pill-text {
+      color: #fff;
+    }
+  }
+}
+
+.tag-pill-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.4;
+}

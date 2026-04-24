@@ -17,7 +17,7 @@ export default defineConfig<"vite">(async (merge) => {
       828: 1.81 / 2,
     },
     alias: {
-      "@": path.resolve(__dirname, "..", "src"),
+      "@": path.resolve(__dirname, "../src"),
     },
     sourceRoot: "src",
     outputRoot: "dist",

@@ -1,0 +1,68 @@
+@use "@/style/varieties.scss" as *;
+
+.tag-selector-wrapper {
+  display: flex;
+  gap: 8rpx;
+  align-items: center;
+}
+.tag-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 8rpx 24rpx;
+  border-radius: 24rpx;
+  background: $card-color;
+  border: 2rpx dashed $border-color;
+  transition: all 0.2s ease;
+  gap: 8rpx;
+  width: fit-content;
+  margin-bottom: $spacing-base;
+
+  &:active {
+    opacity: 0.8;
+  }
+
+  .tag-selector-btn__text {
+    font-size: $base-size;
+    color: #78716c;
+    font-weight: 500;
+  }
+
+  // 已选择状态（深色背景）
+  &--active {
+    background: #57534e;
+    border-color: #57534e;
+
+    .tag-selector-btn__text {
+      color: #fff;
+    }
+
+    .tag-selector-btn__badge {
+      background: #fff;
+
+      .tag-selector-btn__badge-text {
+        color: #57534e;
+      }
+    }
+  }
+
+  // 计数徽章
+  &__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36rpx;
+    height: 36rpx;
+    padding: 0 8rpx;
+    border-radius: 18rpx;
+    background: #fff;
+    margin-left: 4rpx;
+
+    &-text {
+      font-size: 22rpx;
+      font-weight: 600;
+      color: #57534e;
+      line-height: 1;
+    }
+  }
+}

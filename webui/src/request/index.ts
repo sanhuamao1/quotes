@@ -5,8 +5,7 @@ import type {
   Stats,
   CreateQuoteRequest,
   UpdateQuoteRequest,
-  QuoteQueryParams,
-  Pagination,
+  ListApi,
 } from "../types";
 
 // ==================== 摘抄接口 ====================
@@ -15,9 +14,12 @@ import type {
  * 获取摘抄列表
  * GET /quotes?keyword=xxx&tagIds=1,2&page=1&pageSize=20
  */
-export const getQuotes = (
-  params?: QuoteQueryParams,
-): Promise<{ list: Quote[]; pagination: Pagination }> => {
+export interface QuoteQueryParams {
+  keyword?: string;
+  tagIds?: string[];
+}
+export type GetQuotesApi = ListApi<QuoteQueryParams, Quote>;
+export const getQuotes: GetQuotesApi = (params) => {
   const queryParams = new URLSearchParams();
   if (params?.keyword) queryParams.append("keyword", params.keyword);
   if (params?.tagIds?.length)
