@@ -1,20 +1,19 @@
-@use "../../style/varieties.scss" as *;
+@use '../../style/varieties.scss' as *;
 
 .tag-selector-container {
   width: 100%;
   box-sizing: border-box;
+  padding: 32rpx;
 }
 
 // 标签列表区域
 .tag-list-section {
   margin-top: 24rpx;
-}
-
-// 标签云 - 流式布局
-.tag-cloud {
+  min-height: 30vh;
   display: flex;
   flex-wrap: wrap;
   gap: 16rpx;
+  align-items: baseline;
 }
 
 // 空状态

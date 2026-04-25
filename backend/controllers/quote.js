@@ -32,15 +32,15 @@ class QuoteController {
   }
 
   async create(ctx) {
-    const { content, tags = [] } = ctx.request.body;
-    const result = await quoteService.createQuote(content, tags);
+    const { content, tagIds = [], newTagsName = [] } = ctx.request.body;
+    const result = await quoteService.createQuote(content, tagIds, newTagsName);
     Response.success(ctx, result, "摘抄创建成功");
   }
 
   async update(ctx) {
     const { id } = ctx.params;
-    const { content, tags = [] } = ctx.request.body;
-    const result = await quoteService.updateQuote(id, content, tags);
+    const { content, tagIds = [], newTagsName = [] } = ctx.request.body;
+    const result = await quoteService.updateQuote(id, content, tagIds, newTagsName);
     Response.success(ctx, result, "摘抄更新成功");
   }
 

@@ -5,10 +5,8 @@ export interface CreateQuoteRequest {
 }
 
 // 更新摘抄请求
-export interface UpdateQuoteRequest {
-  id: string;
-  content?: string;
-  tagIds?: string[];
+export interface UpdateQuoteRequest extends CreateQuoteRequest {
+  id: number;
 }
 
 // 标签

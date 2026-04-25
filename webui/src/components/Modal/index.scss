@@ -1,0 +1,23 @@
+@use '../../style/varieties.scss' as *;
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-container {
+  width: 85%;
+  max-height: 70vh;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  overflow-y: auto;
+}

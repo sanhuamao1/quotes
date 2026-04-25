@@ -1,14 +1,13 @@
 const quoteRepository = require("../repositories/quote");
-const tagRepository = require("../repositories/tag");
 const BusinessError = require("../utils/BusinessError");
 
 class QuoteService {
-  async createQuote(content, tags = []) {
+  async createQuote(content, tagIds = [], newTagsName = []) {
     try {
-      const { quoteId, tagIds } = await Promise.resolve(
-        quoteRepository.createQuoteWithTags(content, tags),
+      const { quoteId } = await Promise.resolve(
+        quoteRepository.createQuoteWithTags(content, tagIds, newTagsName),
       );
-      return { id: quoteId, tags };
+      return { id: quoteId };
     } catch (error) {
       throw new BusinessError("创建摘抄失败，请稍后重试", -1, 500);
     }
@@ -38,15 +37,15 @@ class QuoteService {
     }
   }
 
-  async updateQuote(id, content, tags = []) {
+  async updateQuote(id, content, tagIds = [], newTagsName = []) {
     try {
       const changes = await Promise.resolve(
-        quoteRepository.updateQuoteWithTags(id, content, tags),
+        quoteRepository.updateQuoteWithTags(id, content, tagIds, newTagsName),
       );
       if (changes === 0) {
         throw new BusinessError("摘抄不存在", -1, 404);
       }
-      return { id, tags };
+      return { id, tagIds, newTagsName };
     } catch (error) {
       if (error instanceof BusinessError) throw error;
       throw new BusinessError("更新摘抄失败，请稍后重试", -1, 500);

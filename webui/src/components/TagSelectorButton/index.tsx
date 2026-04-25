@@ -1,14 +1,18 @@
-import { View, Text } from "@tarojs/components";
-import { useAppStore } from "../../store/useAppStore";
-import "./index.scss";
-import TagIcon from "../SvgIcon/TagIcon";
-import CloseIcon from "../SvgIcon/CloseIcon";
+import { useState } from 'react';
+import { View, Text } from '@tarojs/components';
+import { useFilterStore } from '../../store/useFilterStore';
+import TagSelector from '../TagSelector';
+import Modal from '../Modal';
+import './index.scss';
+import TagIcon from '../SvgIcon/TagIcon';
+import CloseIcon from '../SvgIcon/CloseIcon';
 
 export const TagSelectorButton = () => {
-  const { updateSelectedTags, selectedTags } = useAppStore();
-  const tagCount = selectedTags.length;
+  const { filteredTags, updateFilteredTags } = useFilterStore();
+  const [showModal, setShowModal] = useState(false);
+  const tagCount = filteredTags.length;
   const handleClear = () => {
-    updateSelectedTags([]);
+    updateFilteredTags([]);
   };
 
   // 渲染标签内容
@@ -24,14 +28,12 @@ export const TagSelectorButton = () => {
 
     if (tagCount >= 1) {
       // 状态2：选择了1-2个标签，直接显示
-      const displayText = selectedTags
-        .slice(0, Math.min(tagCount, 2))
-        .map((tag) => `#${tag.name}`);
+      const displayText = filteredTags.slice(0, Math.min(tagCount, 2)).map(tag => `#${tag.name}`);
 
-      console.log("显示的标签：", displayText);
+      console.log('显示的标签：', displayText);
       return (
         <>
-          {displayText.map((text) => (
+          {displayText.map(text => (
             <Text key={text} className="tag-selector-btn__text">
               {text}
             </Text>
@@ -49,12 +51,22 @@ export const TagSelectorButton = () => {
   return (
     <View className="tag-selector-wrapper">
       <View
-        className={`tag-selector-btn ${tagCount > 0 ? "tag-selector-btn--active" : ""}`}
+        className={`tag-selector-btn ${tagCount > 0 ? 'tag-selector-btn--active' : ''}`}
+        onClick={() => setShowModal(true)}
       >
-        <TagIcon type={tagCount > 0 ? "light" : "default"} />
+        <TagIcon type={tagCount > 0 ? 'light' : 'default'} size={1} />
         {renderContent()}
       </View>
       {tagCount > 0 && <CloseIcon onClick={handleClear} />}
+
+      <Modal visible={showModal} onClose={() => setShowModal(false)}>
+        <TagSelector
+          selectedTags={filteredTags}
+          onSelectedTagsChange={updateFilteredTags}
+          showCreate={false}
+          onClose={() => setShowModal(false)}
+        />
+      </Modal>
     </View>
   );
 };

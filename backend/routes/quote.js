@@ -3,7 +3,6 @@ const controller = require("../controllers/quote");
 
 const {
   validateBody,
-  validateQuery,
   validateParams,
 } = require("../middlewares/validate");
 const {

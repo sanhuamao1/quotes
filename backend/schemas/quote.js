@@ -16,14 +16,31 @@ const tagsSchema = Joi.array()
     "string.max": "标签长度不能超过 50 字符",
   });
 
+const tagIdsSchema = Joi.array()
+  .items(Joi.number().integer().positive())
+  .optional()
+  .messages({
+    "array.base": "标签ID必须是数组",
+  });
+
+const newTagsNameSchema = Joi.array()
+  .items(Joi.string().min(1).max(50))
+  .optional()
+  .messages({
+    "array.base": "新标签名称必须是数组",
+    "string.max": "标签长度不能超过 50 字符",
+  });
+
 const createSchema = Joi.object({
   content: contentSchema,
-  tags: tagsSchema,
+  tagIds: tagIdsSchema,
+  newTagsName: newTagsNameSchema,
 });
 
 const updateSchema = Joi.object({
   content: contentSchema.optional(),
-  tags: tagsSchema,
+  tagIds: tagIdsSchema,
+  newTagsName: newTagsNameSchema,
 });
 
 const querySchema = Joi.object({

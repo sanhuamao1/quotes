@@ -1,0 +1,46 @@
+@use '../../../style/varieties.scss' as *;
+
+.drawer-content {
+  padding: 42rpx 48rpx;
+  position: relative;
+  .content-input {
+    width: 100%;
+    min-height: 24vh;
+    background: #fff;
+    border-radius: 20px;
+    font-size: 32px;
+    line-height: 1.8;
+    color: $text-primary;
+    box-sizing: border-box;
+  }
+  .action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16rpx;
+    margin-bottom: 32px;
+  }
+  .tag-section-title {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    font-size: $base-size;
+    color: $text-secondary;
+    gap: 8rpx;
+    align-items: center;
+  }
+
+  .footer {
+    margin-bottom: 36rpx;
+    display: flex;
+    justify-content: flex-end;
+    gap: 24rpx;
+    .tag-show {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      font-size: $small-size;
+      align-items: center;
+    }
+  }
+}

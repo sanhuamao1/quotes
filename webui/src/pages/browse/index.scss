@@ -1,17 +1,11 @@
-@use "../../style/varieties.scss" as *;
+@use '../../style/varieties.scss' as *;
 
 .browse-page {
-  background: $bg-color;
   display: flex;
   flex-direction: column;
   padding: $spacing-base 42rpx;
   box-sizing: border-box;
   height: 100vh;
-}
-
-/* 搜索区域 */
-.search-section {
-  background: $bg-color;
 }
 
 /* 标签筛选区域 */

@@ -1,10 +1,9 @@
-import { type Tag } from "../../types";
-import { getTags } from "../../request";
+import { type Tag } from '../../types';
+import { getTags } from '../../request';
 
 // ---------- 类型定义 ----------
 export interface TagsState {
   tags: Tag[];
-  selectedTags: Tag[];
   tagsLoading: boolean;
   tagsError: string | null;
   tagsFetched: boolean;
@@ -12,7 +11,6 @@ export interface TagsState {
 
 export interface TagsActions {
   fetchTags: (force?: boolean) => Promise<void>;
-  updateSelectedTags: (tags: Tag[]) => void;
   resetTags: () => void;
 }
 
@@ -21,7 +19,6 @@ export type TagsSlice = TagsState & TagsActions;
 // ---------- 初始状态 ----------
 export const initialTagsState: TagsState = {
   tags: [],
-  selectedTags: [],
   tagsLoading: false,
   tagsError: null,
   tagsFetched: false,
@@ -41,16 +38,16 @@ export const createTagsSlice = (set: any, get: any): TagsSlice => ({
     set({ tagsLoading: true, tagsError: null });
     try {
       const tags = await getTags();
-      console.log("[tagsSlice] 获取标签成功:", tags.length, "个");
+      console.log('[tagsSlice] 获取标签成功:', tags.length, '个');
       set({
         tags,
         tagsLoading: false,
         tagsFetched: true,
       });
     } catch (error: any) {
-      console.error("[tagsSlice] 获取标签失败:", error);
+      console.error('[tagsSlice] 获取标签失败:', error);
       set({
-        tagsError: error?.message || "获取标签失败",
+        tagsError: error?.message || '获取标签失败',
         tagsLoading: false,
         // 失败时不标记 fetched，以便下次重试
       });
@@ -59,9 +56,5 @@ export const createTagsSlice = (set: any, get: any): TagsSlice => ({
 
   resetTags: () => {
     set(initialTagsState);
-  },
-
-  updateSelectedTags: (tags: Tag[]) => {
-    set({ selectedTags: tags });
   },
 });

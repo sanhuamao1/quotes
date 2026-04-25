@@ -52,7 +52,7 @@ export const getQuote = (id: string): Promise<Quote> => {
  * PUT /quotes/:id
  */
 export const updateQuote = (
-  id: string,
+  id: number,
   data: Partial<UpdateQuoteRequest>,
 ): Promise<Quote> => {
   return request({ url: `/quotes/${id}`, method: "PUT", data });

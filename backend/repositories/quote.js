@@ -33,7 +33,7 @@ class QuoteRepository {
   }
 
   // ---------- 事务：创建摘抄 + 标签关联 ----------
-  createQuoteWithTags(content, tagNames) {
+  createQuoteWithTags(content, tagIds = [], newTagsName = []) {
     const db = getDB();
     const stmts = this._getPreparedStatements();
 
@@ -41,27 +41,19 @@ class QuoteRepository {
       // 1. 插入摘抄
       const { lastInsertRowid: quoteId } = stmts.insertQuote.run(content);
 
-      // 2. 处理标签
-      const tagIds = [];
-      for (const tagName of tagNames) {
-        // 2.1 查找或插入标签
-        let tag = stmts.selectTagByName.get(tagName);
-        if (!tag) {
+      
+      // 3. 处理新标签（通过newTagsName）
+      for (const tagName of newTagsName) {
           stmts.insertTag.run(tagName);
           tag = stmts.selectTagByName.get(tagName);
-        }
-
-        if (tag) {
-          tagIds.push(tag.id);
-          // 2.2 更新标签最后使用时间
-          stmts.updateTagLastUsed.run(tag.id);
-        }
       }
 
-      // 3. 插入关联
+      // 4. 处理已存在标签的最后使用时间
       for (const tagId of tagIds) {
-        stmts.insertQuoteTag.run(quoteId, tagId);
+        stmts.updateTagLastUsed.run(tagId);
+          stmts.insertQuoteTag.run(quoteId, tagId);
       }
+
 
       return { quoteId, tagIds };
     });
@@ -76,7 +68,7 @@ class QuoteRepository {
   }
 
   // ---------- 事务：更新摘抄及标签 ----------
-  updateQuoteWithTags(id, content, tagNames) {
+  updateQuoteWithTags(id, content, tagIds = [], newTagsName = []) {
     const db = getDB();
     const stmts = this._getPreparedStatements();
 
@@ -87,43 +79,23 @@ class QuoteRepository {
         throw new Error(`摘抄 ID ${id} 不存在`);
       }
 
-      // 2. 获取旧标签
-      const oldTags = db
-        .prepare(
-          `
-        SELECT t.id, t.name FROM tags t
-        JOIN quote_tags qt ON t.id = qt.tag_id
-        WHERE qt.quote_id = ?
-      `,
-        )
-        .all(id);
+    
 
-      // 3. 删除原有标签关联
+      // 2. 删除原有标签关联
       stmts.deleteQuoteTags.run(id);
 
-      // 4. 旧标签处理（不再需要更新 count）
-
-      // 5. 处理新标签
-      const newTagIds = [];
-      for (const tagName of tagNames) {
-        let tag = stmts.selectTagByName.get(tagName);
-        if (!tag) {
-          stmts.insertTag.run(tagName);
+      
+      // 3. 处理新标签（通过newTagsName）
+      for (const tagName of newTagsName) {
+           stmts.insertTag.run(tagName);
           tag = stmts.selectTagByName.get(tagName);
-        }
-
-        if (tag) {
-          newTagIds.push(tag.id);
-          // 更新标签最后使用时间
-          stmts.updateTagLastUsed.run(tag.id);
-        }
       }
 
-      // 6. 插入新关联
-      for (const tagId of newTagIds) {
+      for (const tagId of tagIds) {
         stmts.insertQuoteTag.run(id, tagId);
+        stmts.updateTagLastUsed.run(tagId);
       }
-
+ 
       return result.changes;
     });
 

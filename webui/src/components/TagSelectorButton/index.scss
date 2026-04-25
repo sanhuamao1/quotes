@@ -1,22 +1,22 @@
-@use "@/style/varieties.scss" as *;
+@use '@/style/varieties.scss' as *;
 
 .tag-selector-wrapper {
   display: flex;
   gap: 8rpx;
   align-items: center;
+  margin-bottom: $spacing-base;
 }
 .tag-selector-btn {
   display: flex;
   align-items: center;
   gap: 12rpx;
   padding: 8rpx 24rpx;
-  border-radius: 24rpx;
+  border-radius: 42rpx;
   background: $card-color;
-  border: 2rpx dashed $border-color;
+  border: 2rpx solid $border-color;
   transition: all 0.2s ease;
   gap: 8rpx;
   width: fit-content;
-  margin-bottom: $spacing-base;
 
   &:active {
     opacity: 0.8;
@@ -30,8 +30,8 @@
 
   // 已选择状态（深色背景）
   &--active {
-    background: #57534e;
-    border-color: #57534e;
+    background: $primary-color;
+    border-color: $primary-color;
 
     .tag-selector-btn__text {
       color: #fff;
