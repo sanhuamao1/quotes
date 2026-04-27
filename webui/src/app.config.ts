@@ -7,7 +7,7 @@ export default defineAppConfig({
 
   window: {
     backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#65320708',
+    navigationBarBackgroundColor: '#FAF9F8',
     navigationBarTitleText: '词摘',
     navigationBarTextStyle: 'black',
     backgroundColor: '#65320708',
@@ -15,7 +15,7 @@ export default defineAppConfig({
   tabBar: {
     color: '#999',
     selectedColor: '#8b7355',
-    backgroundColor: '#65320708',
+    backgroundColor: '#fff',
     borderStyle: 'white',
     list: [
       {

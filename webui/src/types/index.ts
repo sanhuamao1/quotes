@@ -12,14 +12,14 @@ export interface UpdateQuoteRequest extends CreateQuoteRequest {
 
 // 标签
 export interface Tag {
-  id: string;
+  id: number;
   name: string;
   count?: number; // 使用次数
   color?: string; // 标签颜色
 }
 
 export interface Quote {
-  id: string;
+  id: number;
   content: string;
   tags: Tag[];
   updatedAt: string;

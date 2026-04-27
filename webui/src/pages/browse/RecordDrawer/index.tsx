@@ -72,7 +72,6 @@ export default function RecordDrawer({ onClose, onRefresh }: RecordDrawerProps) 
         placeholder="在这里记录..."
         adjustKeyboardTo="bottom"
         cursorSpacing={40}
-        focus={!showTagselector}
         value={content}
         onInput={e => {
           updateContent(e.detail.value);
@@ -104,11 +103,7 @@ export default function RecordDrawer({ onClose, onRefresh }: RecordDrawerProps) 
                 <View key={item}>{item}</View>
               ))}
           </View>
-          <TagIcon
-            size={1.4}
-            type={showTagselector ? 'primary' : 'default'}
-            onClick={() => setShowTagSelector(!showTagselector)}
-          />
+          <TagIcon size={1.4} onClick={() => setShowTagSelector(!showTagselector)} />
         </View>
         <SaveIcon onClick={handleSave} size={1.4} />
       </View>

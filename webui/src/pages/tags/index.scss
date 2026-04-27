@@ -158,6 +158,24 @@
   flex-shrink: 0;
 }
 
+.tag-drawer-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.rename-btn {
+  display: flex;
+  align-items: center;
+  padding: 8rpx;
+  border-radius: 12rpx;
+  transition: background 0.2s;
+
+  &:active {
+    background: $bg-color;
+  }
+}
+
 .tag-drawer-title {
   font-size: 32rpx;
   font-weight: 600;
@@ -240,4 +258,23 @@
 .tip-text {
   font-size: 24rpx;
   color: $text-muted;
+}
+
+/* ===== Rename Modal ===== */
+.rename-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.rename-modal-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: $text-primary;
+  text-align: center;
+}
+
+.rename-modal-actions {
+  display: flex;
+  gap: 24rpx;
 }
