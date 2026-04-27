@@ -13,7 +13,6 @@ class QuoteRepository {
                 "UPDATE quotes SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
             ),
             deleteQuote: db.prepare("DELETE FROM quotes WHERE id = ?"),
-            selectQuoteById: db.prepare("SELECT * FROM quotes WHERE id = ?"),
 
             // tags 表操作
             selectTagByName: db.prepare("SELECT id FROM tags WHERE name = ?"),
@@ -23,7 +22,6 @@ class QuoteRepository {
             updateTagLastUsed: db.prepare(
                 "UPDATE tags SET last_used_at = CURRENT_TIMESTAMP WHERE id = ?",
             ),
-            selectTagById: db.prepare("SELECT id, name FROM tags WHERE id = ?"),
 
             // quote_tags 表操作
             deleteQuoteTags: db.prepare(
@@ -234,83 +232,6 @@ class QuoteRepository {
         return {
             list,
             pagination,
-        };
-    }
-
-    // ---------- 根据标签ID获取摘抄 ----------
-    getQuotesByTagId(tagId, page = 1, pageSize = 20) {
-        const db = getDB();
-        const offset = (page - 1) * pageSize;
-
-        // 验证标签是否存在
-        const stmts = this._getPreparedStatements();
-        const tag = stmts.selectTagById.get(tagId);
-        if (!tag) {
-            throw new Error(`标签 ID ${tagId} 不存在`);
-        }
-
-        // 总计数
-        const countSql = `
-      SELECT COUNT(DISTINCT q.id) as total
-      FROM quotes q
-      JOIN quote_tags qt ON q.id = qt.quote_id
-      WHERE qt.tag_id = ?
-    `;
-        const countResult = db.prepare(countSql).get(tagId);
-        const total = countResult ? countResult.total : 0;
-
-        // 查询摘抄
-        const sql = `
-      SELECT q.*, GROUP_CONCAT(t2.name) as tag_names
-      FROM quotes q
-      JOIN quote_tags qt ON q.id = qt.quote_id
-      JOIN tags t ON qt.tag_id = t.id
-      LEFT JOIN quote_tags qt2 ON q.id = qt2.quote_id
-      LEFT JOIN tags t2 ON qt2.tag_id = t2.id
-      WHERE t.id = ?
-      GROUP BY q.id
-      ORDER BY q.updated_at DESC
-      LIMIT ? OFFSET ?
-    `;
-        const quotes = db.prepare(sql).all(tagId, pageSize, offset);
-
-        const list = quotes.map((quote) => ({
-            id: quote.id,
-            content: quote.content,
-            tags: quote.tag_names ? quote.tag_names.split(",") : [],
-            updatedAt: quote.updated_at,
-        }));
-
-        return {
-            list,
-            pagination: {
-                page,
-                pageSize,
-                total,
-                totalPages: Math.ceil(total / pageSize),
-            },
-        };
-    }
-
-    // ---------- 单条摘抄查询 ----------
-    getQuoteById(id) {
-        const stmts = this._getPreparedStatements();
-        const quote = stmts.selectQuoteById.get(id);
-        return quote || null;
-    }
-
-    // 单条摘抄带标签
-    getQuoteWithTags(id) {
-        const quote = this.getQuoteById(id);
-        if (!quote) return null;
-
-        const tagsMap = this.getTagsForQuotes([id]);
-
-        return {
-            id: quote.id,
-            content: quote.content,
-            tags: tagsMap.get(id) || [],
-            updatedAt: quote.updated_at,
         };
     }
 }

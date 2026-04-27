@@ -4,8 +4,7 @@ const tagController = require("../controllers/tag");
 const router = new Router();
 
 router.get("/tags", tagController.list);
-router.get("/tags/:id/quotes", tagController.getQuotesByTag);
 router.put("/tags/rename", tagController.rename);
-router.get("/stats", tagController.getStats);
+router.delete("/tags/:id", tagController.delete);
 
 module.exports = router;

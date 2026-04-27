@@ -164,18 +164,6 @@
   gap: 16rpx;
 }
 
-.rename-btn {
-  display: flex;
-  align-items: center;
-  padding: 8rpx;
-  border-radius: 12rpx;
-  transition: background 0.2s;
-
-  &:active {
-    background: $bg-color;
-  }
-}
-
 .tag-drawer-title {
   font-size: 32rpx;
   font-weight: 600;

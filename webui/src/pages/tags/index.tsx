@@ -8,7 +8,9 @@ import QuoteCard from '../../components/QuoteCard';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
 import RenameIcon from '../../components/SvgIcon/RenameIcon';
-import { getQuotes, deleteQuote, renameTag } from '../../request';
+import DeleteIcon from '../../components/SvgIcon/DeleteIcon';
+
+import { getQuotes, deleteQuote, renameTag, deleteTag } from '../../request';
 import './index.scss';
 
 const TAG_COLORS = [
@@ -112,6 +114,28 @@ export default function Tags() {
     setRenameModalVisible(false);
   }, []);
 
+  const handleDeleteTag = () => {
+    if (!selectedTag) return;
+    Taro.showModal({
+      title: '确认删除',
+      content: `确定要删除标签 #${selectedTag.name} 吗？`,
+      confirmColor: '#e64340',
+      success: async res => {
+        if (res.confirm) {
+          try {
+            await deleteTag(selectedTag.id);
+            updateShowDrawer(false);
+            fetchTags(true);
+            Taro.showToast({ title: '删除成功', icon: 'success' });
+          } catch (error) {
+            console.error('删除标签失败:', error);
+            Taro.showToast({ title: '删除失败', icon: 'none' });
+          }
+        }
+      },
+    });
+  };
+
   const displayTags = useMemo(() => {
     let result = [...tags];
 
@@ -199,16 +223,14 @@ export default function Tags() {
         <View className="tag-drawer">
           <View className="tag-drawer-header">
             <View className="tag-drawer-header-left">
-              <View
-                className="rename-btn"
+              <Text className="tag-drawer-title">#{selectedTag?.name}</Text>
+              <RenameIcon
                 onClick={() => {
                   setRenameInput(selectedTag?.name || '');
                   setRenameModalVisible(true);
                 }}
-              >
-                <RenameIcon size={1} />
-              </View>
-              <Text className="tag-drawer-title">#{selectedTag?.name}</Text>
+              />
+              <DeleteIcon onClick={handleDeleteTag} />
             </View>
             <View className="tag-drawer-close" onClick={handleCloseDrawer}>
               <Text className="tag-drawer-close-icon">×</Text>

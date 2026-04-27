@@ -33,21 +33,6 @@ class QuoteService {
         }
     }
 
-    async getQuoteById(id) {
-        try {
-            const quote = await Promise.resolve(
-                quoteRepository.getQuoteWithTags(id),
-            );
-            if (!quote) {
-                throw new BusinessError("摘抄不存在", -1, 404);
-            }
-            return quote;
-        } catch (error) {
-            if (error instanceof BusinessError) throw error;
-            throw new BusinessError("查询摘抄详情失败", -1, 500);
-        }
-    }
-
     async updateQuote(id, content, tagIds = [], newTagsName = []) {
         try {
             const changes = await Promise.resolve(

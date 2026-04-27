@@ -69,6 +69,14 @@ export const renameTag = (id: number, newName: string): Promise<Tag> => {
   });
 };
 
+/**
+ * 删除标签
+ * DELETE /tags/:id
+ */
+export const deleteTag = (id: number): Promise<void> => {
+  return request({ url: `/tags/${id}`, method: 'DELETE' });
+};
+
 // ==================== 统计接口 ====================
 
 /**

@@ -5,25 +5,13 @@ exports.list = async (ctx) => {
     const tags = await tagService.getTags();
     Response.success(ctx, tags);
 };
-
-exports.getQuotesByTag = async (ctx) => {
+exports.delete = async (ctx) => {
     const { id } = ctx.params;
-    const { page = 1, pageSize = 20 } = ctx.query;
-    const result = await tagService.getQuotesByTag(
-        id,
-        parseInt(page),
-        parseInt(pageSize),
-    );
-    Response.success(ctx, result);
+    await tagService.deleteTag(id);
+    Response.success(ctx, null, "标签删除成功");
 };
-
 exports.rename = async (ctx) => {
     const { id, newName } = ctx.request.body;
     const result = await tagService.renameTag(id, newName);
     Response.success(ctx, result, "标签重命名成功");
-};
-
-exports.getStats = async (ctx) => {
-    const stats = await tagService.getStats();
-    Response.success(ctx, stats);
 };
