@@ -1,13 +1,6 @@
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import type { Pagination, ListApi } from "../types";
-import { getQuotes, GetQuotesApi } from "../request";
+import { useState, useCallback, useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import type { Pagination, ListApi } from '../types';
+import { getQuotes } from '../request';
 
 interface UseQuotesListReturn<T, U> {
   list: U[];
@@ -21,7 +14,7 @@ interface UseQuotesListReturn<T, U> {
   setFilter: (newFilter: T) => void;
 }
 
-type ListType = "quotes";
+type ListType = 'quotes';
 const listTypeMap: Record<ListType, ListApi<any, any>> = {
   quotes: getQuotes,
 };
@@ -29,14 +22,14 @@ const listTypeMap: Record<ListType, ListApi<any, any>> = {
 export function useList<T, U>(
   initialFilter: T,
   listType: ListType,
-  pageSize = 8,
+  pageSize = 8
 ): UseQuotesListReturn<T, U> {
   const [list, setList] = useState<U[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [pagination, setPagination] = useState<Omit<Pagination, "totalPages">>({
+  const [pagination, setPagination] = useState<Omit<Pagination, 'totalPages'>>({
     total: 0,
     page: 1,
     pageSize,
@@ -57,7 +50,7 @@ export function useList<T, U>(
       const { list, pagination: pag } = data;
 
       if (isLoadMore) {
-        setList((prev) => [...prev, ...list]);
+        setList(prev => [...prev, ...list]);
       } else {
         setList(list);
       }
@@ -66,7 +59,7 @@ export function useList<T, U>(
       setHasMore(pag.page < pag.totalPages);
       return data;
     },
-    [pageSize],
+    [pageSize]
   );
 
   // 重置并加载第一页（用于筛选条件变化或主动刷新）
@@ -75,7 +68,7 @@ export function useList<T, U>(
     try {
       await fetchList(1, false);
     } catch (error) {
-      console.error("加载失败:", error);
+      console.error('加载失败:', error);
     } finally {
       setLoading(false);
     }
@@ -88,7 +81,7 @@ export function useList<T, U>(
     try {
       await fetchList(1, false);
     } catch (error) {
-      console.error("刷新失败:", error);
+      console.error('刷新失败:', error);
     } finally {
       setRefreshing(false);
     }
@@ -102,7 +95,7 @@ export function useList<T, U>(
       const nextPage = pagination.page + 1;
       await fetchList(nextPage, true);
     } catch (error) {
-      console.error("加载更多失败:", error);
+      console.error('加载更多失败:', error);
     } finally {
       setLoadingMore(false);
     }
@@ -114,7 +107,7 @@ export function useList<T, U>(
       filterRef.current = newFilter;
       loadFirstPage();
     },
-    [loadFirstPage],
+    [loadFirstPage]
   );
 
   // 初始化加载

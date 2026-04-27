@@ -140,15 +140,63 @@
   line-height: 1.6;
 }
 
-/* ===== Empty State ===== */
-.empty-state {
+/* ===== Tag Drawer ===== */
+.tag-drawer {
   display: flex;
   flex-direction: column;
+  height: 70vh;
+  background: $card-color;
+  border-radius: 32rpx 32rpx 0 0;
+}
+
+.tag-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 40rpx;
+  border-bottom: 2rpx solid $border-color;
+  flex-shrink: 0;
+}
+
+.tag-drawer-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.tag-drawer-close {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: $bg-color;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 200rpx;
-  animation: fadeUp 0.5s ease;
 }
+
+.tag-drawer-close-icon {
+  font-size: 36rpx;
+  color: $text-secondary;
+  line-height: 1;
+}
+
+.tag-drawer-scroll {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12rpx;
+
+    .quote-card.small {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* ===== Empty State ===== */
 
 @keyframes fadeUp {
   from {
@@ -181,5 +229,15 @@
 
 .empty-desc {
   font-size: 26rpx;
+  color: $text-muted;
+}
+
+.load-more-tip {
+  text-align: center;
+  padding: 24rpx 0;
+}
+
+.tip-text {
+  font-size: 24rpx;
   color: $text-muted;
 }

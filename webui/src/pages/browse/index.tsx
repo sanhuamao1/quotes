@@ -22,7 +22,7 @@ type Filter = {
 
 export default function Browse() {
   const { keyword, updateKeyword, filteredTags, updateFilteredTags } = useFilterStore();
-  const { updateContent, updateSelectedTags, handleReset } = useAddQuoteStore();
+  const { updateContent, updateSelectedTags, handleReset, setIsAdd, updateId } = useAddQuoteStore();
 
   const [showDrawer, updateShowDrawer] = useDrawer(false);
 
@@ -98,6 +98,8 @@ export default function Browse() {
               updateShowDrawer(true);
               updateContent(quote.content);
               updateSelectedTags(quote.tags);
+              setIsAdd(false);
+              updateId(quote.id);
             }}
           />
         ))}
@@ -127,7 +129,10 @@ export default function Browse() {
         className="fab-btn"
         width={80}
         height={80}
-        onClick={() => updateShowDrawer(true)}
+        onClick={() => {
+          updateShowDrawer(true);
+          setIsAdd(true);
+        }}
       >
         +
       </Button>

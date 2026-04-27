@@ -1,7 +1,8 @@
 // 创建摘抄请求
 export interface CreateQuoteRequest {
   content: string;
-  tags: string[];
+  tagIds: number[];
+  newTagsName: string[]; // 新标签名称列表
 }
 
 // 更新摘抄请求
@@ -38,5 +39,5 @@ export interface Pagination {
 }
 
 export type ListApi<T, U> = (
-  params: T & { page: number; pageSize: number },
+  params: T & { page?: number; pageSize?: number }
 ) => Promise<{ list: U[]; pagination: Pagination }>;

@@ -25,10 +25,10 @@ page {
     box-sizing: border-box;
     padding: 0 24rpx;
     background: #fff;
+    border: 1px solid $border-color;
 
     &.round {
       border-radius: 64rpx;
-      border: 1px solid $border-color;
     }
 
     input {
@@ -39,4 +39,14 @@ page {
       }
     }
   }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+  animation: fadeUp 0.5s ease;
+  box-sizing: border-box;
 }

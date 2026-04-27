@@ -1,8 +1,11 @@
-import Taro, { useDidShow } from '@tarojs/taro';
-import { View, Text, Icon, Input, ScrollView } from '@tarojs/components';
+import { useDidShow } from '@tarojs/taro';
+import { View, Text, Icon, Input, ScrollView, PageContainer } from '@tarojs/components';
 import { useState, useMemo, useCallback } from 'react';
+import { useDrawer } from '../../hooks/useDrawer';
 import { useAppStore } from '../../store/useAppStore';
-import { useFilterStore } from '../../store/useFilterStore';
+import type { Tag, Quote } from '../../types';
+import QuoteCard from '../../components/QuoteCard';
+import { getQuotes } from '../../request';
 import './index.scss';
 
 const TAG_COLORS = [
@@ -28,9 +31,12 @@ const FILTERS: { key: FilterKey; label: string }[] = [
 
 export default function Tags() {
   const { tags, fetchTags } = useAppStore();
-  const { updateFilteredTags } = useFilterStore();
   const [keyword, setKeyword] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
+
+  const [showDrawer, updateShowDrawer] = useDrawer();
+  const [tagName, setTagName] = useState('');
+  const [list, setList] = useState<Quote[]>([]);
 
   useDidShow(() => {
     fetchTags(true);
@@ -44,13 +50,17 @@ export default function Tags() {
     setActiveFilter(key);
   }, []);
 
-  const handleTagClick = useCallback(
-    (tag: { id: string; name: string }) => {
-      updateFilteredTags([{ id: tag.id, name: tag.name }]);
-      Taro.switchTab({ url: '/pages/browse/index' });
-    },
-    [updateFilteredTags],
-  );
+  const handleTagClick = useCallback(async (tag: Tag) => {
+    setTagName(tag.name);
+    await getQuotes({ tagIds: [tag.id] }).then(data => {
+      setList(data.list);
+    });
+    updateShowDrawer(true);
+  }, []);
+
+  const handleCloseDrawer = useCallback(() => {
+    updateShowDrawer(false);
+  }, []);
 
   const displayTags = useMemo(() => {
     let result = [...tags];
@@ -133,6 +143,25 @@ export default function Tags() {
           </View>
         )}
       </ScrollView>
+
+      {/* Tag Quotes Drawer */}
+      <PageContainer show={showDrawer} round position="bottom" onClickOverlay={handleCloseDrawer}>
+        <View className="tag-drawer">
+          <View className="tag-drawer-header">
+            <Text className="tag-drawer-title">#{tagName}</Text>
+            <View className="tag-drawer-close" onClick={handleCloseDrawer}>
+              <Text className="tag-drawer-close-icon">×</Text>
+            </View>
+          </View>
+          <ScrollView className="tag-drawer-scroll" scrollY lowerThreshold={100}>
+            <View className="flow">
+              {list.map(quote => (
+                <QuoteCard key={quote.id} content={quote.content} size="small" />
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+      </PageContainer>
     </View>
   );
 }

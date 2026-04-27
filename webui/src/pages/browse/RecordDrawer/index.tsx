@@ -3,7 +3,7 @@ import { View, Textarea } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import TagSelector from '../../../components/TagSelector';
 import Modal from '../../../components/Modal';
-import { createQuote ,updateQuote} from '../../../request';
+import { createQuote, updateQuote } from '../../../request';
 import { useAddQuoteStore } from '../../../store/useAddQuoteStore';
 import { useAppStore } from '../../../store/useAppStore';
 import './index.scss';
@@ -16,7 +16,17 @@ interface RecordDrawerProps {
 }
 
 export default function RecordDrawer({ onClose, onRefresh }: RecordDrawerProps) {
-  const { content, selectedTags, newTagNames, updateContent, updateSelectedTags, updateNewTagNames, handleReset, isAdd,id } = useAddQuoteStore();
+  const {
+    content,
+    selectedTags,
+    newTagNames,
+    updateContent,
+    updateSelectedTags,
+    updateNewTagNames,
+    handleReset,
+    isAdd,
+    id,
+  } = useAddQuoteStore();
   const [showTagselector, setShowTagSelector] = useState(false);
   const { fetchTags } = useAppStore();
 
@@ -28,20 +38,21 @@ export default function RecordDrawer({ onClose, onRefresh }: RecordDrawerProps) 
     }
 
     try {
-      if(isAdd){
-      await createQuote({
-        content: trimmedContent,
-        tags: [...selectedTags.map(t => t.name), ...newTagNames],
-      });
-      Taro.showToast({ title: '保存成功', icon: 'success' });
-      }else{
-        await updateQuote(id,{
+      if (isAdd) {
+        await createQuote({
           content: trimmedContent,
-          tags: [...selectedTags.map(t => t.name), ...newTagNames],
+          tagIds: selectedTags.map(t => t.id),
+          newTagsName: newTagNames,
+        });
+        Taro.showToast({ title: '保存成功', icon: 'success' });
+      } else {
+        await updateQuote(id, {
+          content: trimmedContent,
+          tagIds: selectedTags.map(t => t.id),
+          newTagsName: newTagNames,
         });
         Taro.showToast({ title: '保存成功', icon: 'success' });
       }
-
 
       if (newTagNames.length > 0) {
         fetchTags(true);
