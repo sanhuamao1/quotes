@@ -81,7 +81,7 @@ export const deleteTag = (id: number): Promise<void> => {
 // ==================== 导出接口 ====================
 
 /**
- * 导出摘抄为 CSV
+ * 导出摘抄为 Excel
  * GET /quotes/export?tagIds=1,2
  */
 export const exportQuotes = async (tagIds: number[]): Promise<void> => {
@@ -92,12 +92,12 @@ export const exportQuotes = async (tagIds: number[]): Promise<void> => {
   const query = params.toString();
   const url = `${baseUrl}/quotes/export${query ? `?${query}` : ''}`;
   const dateStr = new Date().toISOString().slice(0, 10);
-  const filename = `quotes_export_${dateStr}.csv`;
+  const filename = `quotes_export_${dateStr}.xlsx`;
 
   const res = await Taro.request({
     url,
     method: 'GET',
-    responseType: 'text',
+    responseType: 'arraybuffer',
     header: {
       ...(token && { Authorization: `Bearer ${token}` }),
     },
@@ -107,10 +107,12 @@ export const exportQuotes = async (tagIds: number[]): Promise<void> => {
     throw new Error('导出失败');
   }
 
-  const csvContent = res.data as string;
+  const data = res.data as ArrayBuffer;
 
   if (process.env.TARO_ENV === 'h5') {
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+    const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const blobUrl = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = blobUrl;
@@ -123,13 +125,22 @@ export const exportQuotes = async (tagIds: number[]): Promise<void> => {
   } else {
     const fs = Taro.getFileSystemManager();
     const savedPath = `${Taro.env.USER_DATA_PATH}/${filename}`;
-    fs.writeFile({
+    await new Promise<void>((resolve, reject) => {
+      fs.writeFile({
+        filePath: savedPath,
+        data,
+        success() {
+          resolve();
+        },
+        fail(err) {
+          reject(new Error(err?.errMsg || '文件写入失败'));
+        },
+      });
+    });
+    await Taro.openDocument({
       filePath: savedPath,
-      data: csvContent,
-      encoding: 'utf-8',
-      success() {
-        Taro.showToast({ title: '导出成功', icon: 'success' });
-      },
+      fileType: 'xlsx',
+      showMenu: true,
     });
   }
 };

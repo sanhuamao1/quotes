@@ -72,15 +72,18 @@ class QuoteController {
             }
         }
 
-        const csv = await quoteService.exportQuotes(processedTagIds);
+        const buffer = await quoteService.exportQuotes(processedTagIds);
         const dateStr = new Date().toISOString().slice(0, 10);
 
-        ctx.set("Content-Type", "text/csv; charset=utf-8");
+        ctx.set(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        );
         ctx.set(
             "Content-Disposition",
-            `attachment; filename="quotes_export_${dateStr}.csv"`,
+            `attachment; filename="quotes_export_${dateStr}.xlsx"`,
         );
-        ctx.body = csv;
+        ctx.body = Buffer.from(buffer);
     }
 
     async delete(ctx) {

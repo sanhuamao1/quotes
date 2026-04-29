@@ -1,6 +1,6 @@
 const quoteRepository = require("../repositories/quote");
 const BusinessError = require("../utils/BusinessError");
-const { toCSV } = require("../utils/csv");
+const { toExcel } = require("../utils/excel");
 
 class QuoteService {
     async createQuote(content, tagIds = [], newTagsName = []) {
@@ -71,7 +71,7 @@ class QuoteService {
                 { header: "标签", key: "tags" },
             ];
 
-            return toCSV(rows, columns);
+            return toExcel(rows, columns);
         } catch (error) {
             console.error("导出摘抄失败:", error);
             throw new BusinessError("导出失败，请稍后重试", -1, 500);
