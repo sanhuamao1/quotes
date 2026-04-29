@@ -31,4 +31,4 @@ RUN mkdir -p /app/data
 
 ENV NODE_ENV=production
 
-CMD ["node", "dist/index.js"]
+CMD ["sh", "-c", "npx knex migrate:latest && node dist/index.js"]
