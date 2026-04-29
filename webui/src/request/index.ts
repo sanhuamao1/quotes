@@ -103,6 +103,11 @@ export const exportQuotes = async (tagIds: number[]): Promise<void> => {
     },
   });
 
+  if (res.statusCode === 401) {
+    Taro.removeStorageSync('token');
+    throw new Error('登录已过期，请重启小程序');
+  }
+
   if (res.statusCode < 200 || res.statusCode >= 300) {
     throw new Error('导出失败');
   }

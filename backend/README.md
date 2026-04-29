@@ -11,33 +11,6 @@
 - @koa/router
 - better-sqlite3
 
-## 项目结构
-
-```
-backend/
-├── controllers/     # 控制器层，处理 HTTP 请求
-│   ├── RecordController.js
-│   └── TagController.js
-├── db/             # 数据库相关文件
-│   ├── db.js       # 数据库连接管理
-│   ├── init.js     # 数据库初始化脚本
-│   └── finance.db  # SQLite 数据库文件
-├── routes/         # 路由层，注册路由
-│   ├── RecordRoute.js
-│   └── TagRoute.js
-├── services/       # 服务层，处理业务逻辑
-│   ├── RecordService.js
-│   └── TagService.js
-├── utils/          # 工具函数
-│   ├── BusinessError.js
-│   ├── Response.js
-│   ├── errorMw.js
-│   └── index.js
-├── app.js          # 主应用文件
-├── package.json    # 项目配置
-└── README.md       # 项目文档
-```
-
 ## 数据库结构
 
 ### 记录表 (records)
@@ -71,48 +44,48 @@ backend/
 - **请求方法**: GET
 - **URL**: `/records`
 - **查询参数**:
-  - `tagIds` (可选): 标签 ID 列表，使用逗号分隔的字符串格式（如 "id1,id2"），用于按标签筛选记录
-  - `keyword` (可选): 关键字，用于按内容搜索记录
+    - `tagIds` (可选): 标签 ID 列表，使用逗号分隔的字符串格式（如 "id1,id2"），用于按标签筛选记录
+    - `keyword` (可选): 关键字，用于按内容搜索记录
 - **响应格式**:
-  ```json
-  {
-    "code": 0,
-    "message": "success",
-    "data": [
-      {
-        "id": "mo89ock79gukjk",
-        "content": "今天学习了数据库设计 #学习 #笔记",
-        "updated_at": "2026-04-20 16:00:00",
-        "tags": [
-          { "id": "mo89ock80u3wbo", "name": "学习" },
-          { "id": "mo89ock9etegq4", "name": "笔记" }
+    ```json
+    {
+        "code": 0,
+        "message": "success",
+        "data": [
+            {
+                "id": "mo89ock79gukjk",
+                "content": "今天学习了数据库设计 #学习 #笔记",
+                "updated_at": "2026-04-20 16:00:00",
+                "tags": [
+                    { "id": "mo89ock80u3wbo", "name": "学习" },
+                    { "id": "mo89ock9etegq4", "name": "笔记" }
+                ]
+            }
         ]
-      }
-    ]
-  }
-  ```
+    }
+    ```
 
 #### 2. 创建记录
 
 - **请求方法**: POST
 - **URL**: `/records`
 - **请求体**:
-  ```json
-  {
-    "content": "今天学习了 Koa 框架 #学习 #后端"
-  }
-  ```
-- **响应格式**:
-  ```json
-  {
-    "code": 0,
-    "message": "记录创建成功",
-    "data": {
-      "id": "mo8ajxax8ztzw6",
-      "tags": ["标签ID1", "标签ID2"]
+    ```json
+    {
+        "content": "今天学习了 Koa 框架 #学习 #后端"
     }
-  }
-  ```
+    ```
+- **响应格式**:
+    ```json
+    {
+        "code": 0,
+        "message": "记录创建成功",
+        "data": {
+            "id": "mo8ajxax8ztzw6",
+            "tags": ["标签ID1", "标签ID2"]
+        }
+    }
+    ```
 - **说明**: 系统会自动解析内容中的标签（格式如 `#学习 `，以 # 开头，以空格结尾），创建不存在的标签，并建立记录与标签的关联。
 
 #### 3. 更新记录
@@ -120,22 +93,22 @@ backend/
 - **请求方法**: PUT
 - **URL**: `/records/:id`
 - **请求体**:
-  ```json
-  {
-    "content": "今天学习了 Express 框架 #学习 #后端"
-  }
-  ```
-- **响应格式**:
-  ```json
-  {
-    "code": 0,
-    "message": "记录更新成功",
-    "data": {
-      "id": "mo8ajxax8ztzw6",
-      "tags": ["标签1", "标签2"]
+    ```json
+    {
+        "content": "今天学习了 Express 框架 #学习 #后端"
     }
-  }
-  ```
+    ```
+- **响应格式**:
+    ```json
+    {
+        "code": 0,
+        "message": "记录更新成功",
+        "data": {
+            "id": "mo8ajxax8ztzw6",
+            "tags": ["标签1", "标签2"]
+        }
+    }
+    ```
 - **说明**: 系统会自动重新解析内容中的标签，更新标签关联。
 
 #### 4. 删除记录
@@ -143,15 +116,15 @@ backend/
 - **请求方法**: DELETE
 - **URL**: `/records/:id`
 - **响应格式**:
-  ```json
-  {
-    "code": 0,
-    "message": "记录删除成功",
-    "data": {
-      "success": true
+    ```json
+    {
+        "code": 0,
+        "message": "记录删除成功",
+        "data": {
+            "success": true
+        }
     }
-  }
-  ```
+    ```
 - **说明**: 系统会自动删除记录与标签的关联。
 
 ### 标签相关接口
@@ -161,17 +134,17 @@ backend/
 - **请求方法**: GET
 - **URL**: `/tags`
 - **响应格式**:
-  ```json
-  {
-    "code": 0,
-    "message": "success",
-    "data": [
-      { "id": "mo89ock80u3wbo", "name": "学习" },
-      { "id": "mo89ock9etegq4", "name": "笔记" },
-      { "id": "mo89r6gc8553qg", "name": "后端" }
-    ]
-  }
-  ```
+    ```json
+    {
+        "code": 0,
+        "message": "success",
+        "data": [
+            { "id": "mo89ock80u3wbo", "name": "学习" },
+            { "id": "mo89ock9etegq4", "name": "笔记" },
+            { "id": "mo89r6gc8553qg", "name": "后端" }
+        ]
+    }
+    ```
 
 ## 安装和运行
 

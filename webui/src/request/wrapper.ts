@@ -39,12 +39,21 @@ export async function request<T = any>(options: RequestOptions): Promise<T> {
       return res.data.data;
     }
 
+    // 401: token 过期或无效
+    if (res.statusCode === 401) {
+      Taro.removeStorageSync("token");
+      throw new Error("登录已过期，请重启小程序");
+    }
+
     throw new Error(res.data.message || `请求失败: ${res.statusCode}`);
   } catch (error: any) {
-    Taro.showToast({
-      title: error.message || "网络错误",
-      icon: "none",
-    });
+    // 避免重复提示 401 错误（已在上面处理跳转）
+    if (error.message !== "登录已过期，请重新登录") {
+      Taro.showToast({
+        title: error.message || "网络错误",
+        icon: "none",
+      });
+    }
     throw error;
   }
 }

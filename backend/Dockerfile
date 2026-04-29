@@ -1,29 +1,32 @@
-# 使用 Node.js 18 作为基础镜像
-FROM node:20-alpine
+# Stage 1: Build
+FROM node:20-alpine AS builder
 
-# 设置工作目录
 WORKDIR /app
 
-RUN npm config set registry https://registry.npmmirror.com/
-
-RUN echo "http://mirrors.aliyun.com/alpine/v3.18/main" > /etc/apk/repositories && \
-    echo "http://mirrors.aliyun.com/alpine/v3.18/community" >> /etc/apk/repositories && \
-    apk update
-
-# 安装构建依赖（用于编译 better-sqlite3）
 RUN apk add --no-cache python3 make g++
 
-# 复制 package.json 和 package-lock.json
 COPY package*.json ./
+RUN npm ci
 
-# 安装依赖
-RUN npm ci --only=production
-
-# 复制应用代码
 COPY . .
+RUN npm run build
 
-# 创建数据库目录（如果不存在）
-RUN mkdir -p /app/db
+# Stage 2: Production
+FROM node:20-alpine
 
-# 启动应用
-CMD ["node", "app.js"]
+WORKDIR /app
+
+RUN apk add --no-cache python3 make g++
+
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+COPY --from=builder /app/dist ./dist
+COPY knexfile.js ./
+COPY src/db/migrations ./src/db/migrations
+
+RUN mkdir -p /app/data
+
+ENV NODE_ENV=production
+
+CMD ["node", "dist/index.js"]

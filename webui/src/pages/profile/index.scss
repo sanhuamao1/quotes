@@ -48,4 +48,41 @@
     color: $text-muted;
     line-height: 1;
   }
+
+  .user-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: $card-color;
+    border: 2rpx solid $border-color;
+    border-radius: 24rpx;
+    padding: 32rpx;
+    margin-top: 16px;
+  }
+
+  .user-info {
+    flex: 1;
+  }
+
+  .user-name {
+    font-size: $base-size;
+    color: $text-primary;
+  }
+
+  .user-hint {
+    font-size: 24rpx;
+    color: $text-muted;
+    margin-top: 8rpx;
+  }
+
+  .logout-btn {
+    padding: 12rpx 24rpx;
+    border: 2rpx solid #e74c3c;
+    border-radius: 12rpx;
+  }
+
+  .logout-btn__text {
+    font-size: 24rpx;
+    color: #e74c3c;
+  }
 }

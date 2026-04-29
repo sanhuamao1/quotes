@@ -1,11 +1,8 @@
 backend/node_modules
 webui/node_modules
-webui/.env.production
 *.db
 *.db-shm
 *.db-wal
 .trae
-backend/db/index.db-wal
-backend/db/index.db-shm
-webui/DEVELOPMENT.md
 webui/.env.production
+backend/.env
