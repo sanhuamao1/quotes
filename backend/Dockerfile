@@ -3,7 +3,8 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-RUN apk add --no-cache python3 make g++
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add --no-cache python3 make g++
 
 COPY package*.json ./
 RUN npm ci
@@ -16,7 +17,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache python3 make g++
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk add --no-cache python3 make g++
 
 COPY package*.json ./
 RUN npm ci --only=production && npm cache clean --force
