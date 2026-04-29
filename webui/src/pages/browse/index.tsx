@@ -6,12 +6,13 @@ import QuoteCard from '../../components/QuoteCard';
 import RecordDrawer from './RecordDrawer';
 import { type Tag, Quote } from '../../types';
 import Button from '../../components/Button';
+import EmptyState from '../../components/EmptyState';
 
 import { deleteQuote } from '../../request';
 import { useList } from '../../hooks/useList';
 import { useDrawer } from '../../hooks/useDrawer';
 import { useFilterStore } from '../../store/useFilterStore';
-import TagSelectorButton from '../../components/TagSelectorButton';
+import TagSelectorButton from './TagSelectorButton';
 import './index.scss';
 import { useAddQuoteStore } from '../../store/useAddQuoteStore';
 
@@ -117,10 +118,7 @@ export default function Browse() {
         )}
 
         {list.length === 0 && !loading && (
-          <View className="empty-state">
-            <Text className="empty-text">暂无摘抄记录</Text>
-            <Text className="empty-hint">点击下方 + 按钮添加第一条摘抄吧</Text>
-          </View>
+          <EmptyState title="暂无摘抄记录" description="点击下方 + 按钮添加第一条摘抄吧" />
         )}
       </ScrollView>
 

@@ -1,0 +1,28 @@
+@use '@/style/varieties.scss' as *;
+@use '@/style/mixins.scss' as *;
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.empty-state {
+  @include flex-col;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+  animation: fadeUp 0.5s ease;
+  box-sizing: border-box;
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: $text-primary;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: $text-muted;
+}

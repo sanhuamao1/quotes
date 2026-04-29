@@ -7,6 +7,7 @@ const { createSchema, updateSchema, querySchema } = require("../schemas/quote");
 const router = new Router();
 
 router.get("/quotes", validateParams(querySchema), controller.list);
+router.get("/quotes/export", controller.exportCsv);
 router.post("/quotes", validateBody(createSchema), controller.create);
 router.put("/quotes/:id", validateBody(updateSchema), controller.update);
 router.delete("/quotes/:id", controller.delete);

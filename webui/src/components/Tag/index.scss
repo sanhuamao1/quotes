@@ -1,25 +1,17 @@
 @use '../../style/varieties.scss' as *;
+@use '../../style/mixins.scss' as *;
 
 .tag-pill {
   display: inline-flex;
   align-items: center;
   padding: $tag-padding;
-  transition: all 0.2s ease;
-
-  &:active {
-    opacity: 0.8;
-    transform: scale(0.98);
-  }
 
   &--selected,
   &--checked {
     background: $primary-color;
     border-color: $primary-color;
     border-radius: 12rpx;
-
-    .tag-pill-text {
-      color: #fff;
-    }
+    .tag-pill-text { color: #fff; }
   }
 }
 

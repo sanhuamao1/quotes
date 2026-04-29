@@ -4,19 +4,18 @@
   width: 100%;
   box-sizing: border-box;
   padding: 32rpx;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
 }
 
-// 标签列表区域
 .tag-list-section {
-  margin-top: 24rpx;
-  min-height: 30vh;
-  display: flex;
   flex-wrap: wrap;
   gap: 16rpx;
+  flex: 1;
   align-items: baseline;
 }
 
-// 空状态
 .tag-empty-text {
   width: 100%;
   color: $text-muted;

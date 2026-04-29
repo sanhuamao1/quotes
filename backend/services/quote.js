@@ -1,5 +1,6 @@
 const quoteRepository = require("../repositories/quote");
 const BusinessError = require("../utils/BusinessError");
+const { toCSV } = require("../utils/csv");
 
 class QuoteService {
     async createQuote(content, tagIds = [], newTagsName = []) {
@@ -51,6 +52,29 @@ class QuoteService {
             console.error("更新摘抄失败:", error);
             if (error instanceof BusinessError) throw error;
             throw new BusinessError("更新摘抄失败，请稍后重试", -1, 500);
+        }
+    }
+
+    async exportQuotes(tagIds) {
+        try {
+            const quotes = await Promise.resolve(
+                quoteRepository.getQuotesWithTagsForExport({ tagIds }),
+            );
+
+            const rows = quotes.map((q) => ({
+                content: q.content,
+                tags: q.tags.map((t) => t.name).join(", "),
+            }));
+
+            const columns = [
+                { header: "内容", key: "content" },
+                { header: "标签", key: "tags" },
+            ];
+
+            return toCSV(rows, columns);
+        } catch (error) {
+            console.error("导出摘抄失败:", error);
+            throw new BusinessError("导出失败，请稍后重试", -1, 500);
         }
     }
 

@@ -53,6 +53,36 @@ class QuoteController {
         Response.success(ctx, result, "摘抄更新成功");
     }
 
+    async exportCsv(ctx) {
+        let processedTagIds = null;
+        const { tagIds } = ctx.query;
+
+        if (tagIds !== undefined && tagIds !== null && tagIds !== "") {
+            if (typeof tagIds === "string") {
+                processedTagIds = tagIds
+                    .split(",")
+                    .map((id) => id.trim())
+                    .filter((id) => id.length > 0);
+            } else {
+                processedTagIds = tagIds
+                    .toString()
+                    .split(",")
+                    .map((id) => id.trim())
+                    .filter((id) => id.length > 0);
+            }
+        }
+
+        const csv = await quoteService.exportQuotes(processedTagIds);
+        const dateStr = new Date().toISOString().slice(0, 10);
+
+        ctx.set("Content-Type", "text/csv; charset=utf-8");
+        ctx.set(
+            "Content-Disposition",
+            `attachment; filename="quotes_export_${dateStr}.csv"`,
+        );
+        ctx.body = csv;
+    }
+
     async delete(ctx) {
         const { id } = ctx.params;
         await quoteService.deleteQuote(id);

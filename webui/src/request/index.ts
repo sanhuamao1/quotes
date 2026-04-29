@@ -1,3 +1,4 @@
+import Taro from '@tarojs/taro';
 import { request } from './wrapper';
 import type { Quote, Tag, Stats, CreateQuoteRequest, UpdateQuoteRequest, ListApi } from '../types';
 
@@ -75,6 +76,62 @@ export const renameTag = (id: number, newName: string): Promise<Tag> => {
  */
 export const deleteTag = (id: number): Promise<void> => {
   return request({ url: `/tags/${id}`, method: 'DELETE' });
+};
+
+// ==================== 导出接口 ====================
+
+/**
+ * 导出摘抄为 CSV
+ * GET /quotes/export?tagIds=1,2
+ */
+export const exportQuotes = async (tagIds: number[]): Promise<void> => {
+  const token = Taro.getStorageSync('token');
+  const baseUrl = process.env.TARO_APP_API_BASE_URL || 'http://localhost:3000/api';
+  const params = new URLSearchParams();
+  if (tagIds.length > 0) params.append('tagIds', tagIds.join(','));
+  const query = params.toString();
+  const url = `${baseUrl}/quotes/export${query ? `?${query}` : ''}`;
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const filename = `quotes_export_${dateStr}.csv`;
+
+  const res = await Taro.request({
+    url,
+    method: 'GET',
+    responseType: 'text',
+    header: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+  });
+
+  if (res.statusCode < 200 || res.statusCode >= 300) {
+    throw new Error('导出失败');
+  }
+
+  const csvContent = res.data as string;
+
+  if (process.env.TARO_ENV === 'h5') {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
+  } else {
+    const fs = Taro.getFileSystemManager();
+    const savedPath = `${Taro.env.USER_DATA_PATH}/${filename}`;
+    fs.writeFile({
+      filePath: savedPath,
+      data: csvContent,
+      encoding: 'utf-8',
+      success() {
+        Taro.showToast({ title: '导出成功', icon: 'success' });
+      },
+    });
+  }
 };
 
 // ==================== 统计接口 ====================

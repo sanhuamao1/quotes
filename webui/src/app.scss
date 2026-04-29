@@ -1,5 +1,5 @@
-// 全局变量
 @use '@/style/varieties.scss' as *;
+@use '@/style/mixins.scss' as *;
 
 page {
   font-family:
@@ -8,16 +8,13 @@ page {
   background: $bg-color;
 }
 
-// 输入框
 .base-input-section {
-  display: flex;
-  align-items: center;
+  @include flex-center;
   gap: 20rpx;
   margin-bottom: 32rpx;
 
   .base-input {
-    display: flex;
-    align-items: center;
+    @include flex-center;
     gap: 20rpx;
     flex: 1;
     height: 80rpx;
@@ -27,26 +24,12 @@ page {
     background: #fff;
     border: 1px solid $border-color;
 
-    &.round {
-      border-radius: 64rpx;
-    }
+    &.round { border-radius: 64rpx; }
 
     input {
       font-size: $base-size;
       color: $text-primary;
-      &::placeholder {
-        color: $text-muted;
-      }
+      &::placeholder { color: $text-muted; }
     }
   }
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 200rpx;
-  animation: fadeUp 0.5s ease;
-  box-sizing: border-box;
 }

@@ -7,8 +7,8 @@ import type { Tag, Quote } from '../../types';
 import QuoteCard from '../../components/QuoteCard';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
-import RenameIcon from '../../components/SvgIcon/RenameIcon';
-import DeleteIcon from '../../components/SvgIcon/DeleteIcon';
+import EmptyState from '../../components/EmptyState';
+import { RenameIcon, DeleteIcon } from '../../components/SvgIcon';
 
 import { getQuotes, deleteQuote, renameTag, deleteTag } from '../../request';
 import './index.scss';
@@ -211,10 +211,7 @@ export default function Tags() {
             })}
           </View>
         ) : (
-          <View className="empty-state">
-            <Text className="empty-title">没有匹配的标签</Text>
-            <Text className="empty-desc">试试其他搜索词</Text>
-          </View>
+          <EmptyState title="没有匹配的标签" description="试试其他搜索词" />
         )}
       </ScrollView>
 

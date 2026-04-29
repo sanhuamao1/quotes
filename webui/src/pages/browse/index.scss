@@ -1,14 +1,13 @@
 @use '../../style/varieties.scss' as *;
+@use '../../style/mixins.scss' as *;
 
 .browse-page {
-  display: flex;
-  flex-direction: column;
+  @include flex-col;
   padding: $spacing-base 42rpx;
   box-sizing: border-box;
   height: 100vh;
 }
 
-/* 标签筛选区域 */
 .filter-section {
   background: $bg-color;
   margin-bottom: $spacing-base;
@@ -21,10 +20,7 @@
   display: block;
 }
 
-.tag-filter-scroll {
-  width: 100%;
-  white-space: nowrap;
-}
+.tag-filter-scroll { width: 100%; white-space: nowrap; }
 
 .tag-filter-list {
   display: inline-flex;
@@ -32,7 +28,6 @@
   padding-right: 32px;
 }
 
-/* 摘抄列表 */
 .quotes-list {
   flex: 1;
   box-sizing: border-box;
@@ -40,10 +35,8 @@
   padding-bottom: 64rpx;
 }
 
-/* 加载更多提示 */
 .load-more-tip {
-  display: flex;
-  align-items: center;
+  @include flex-center;
   justify-content: center;
   padding: 32px 0;
 }
@@ -53,18 +46,6 @@
   color: $text-muted;
 }
 
-.empty-text {
-  font-size: 32px;
-  color: $text-secondary;
-  margin-bottom: 16px;
-}
-
-.empty-hint {
-  font-size: 26px;
-  color: $text-muted;
-}
-
-/* 悬浮加号按钮 */
 .fab-btn {
   position: fixed;
   bottom: 40px;
@@ -75,9 +56,4 @@
   box-shadow: 0 4px 16px rgba(139, 115, 85, 0.4);
   z-index: 100;
   font-size: 60px;
-
-  &:active {
-    opacity: 0.85;
-    transform: translateX(-50%) scale(0.95);
-  }
 }

@@ -179,7 +179,6 @@ class QuoteRepository {
         };
     }
 
-    // ---------- 批量获取摘抄标签（避免 N+1） ----------
     getTagsForQuotes(quoteIds) {
         if (quoteIds.length === 0) return new Map();
 
@@ -204,7 +203,6 @@ class QuoteRepository {
         return map;
     }
 
-    // ---------- 完整查询：摘抄 + 标签 ----------
     getQuotesWithTags({ page = 1, pageSize = 20, tagIds, keyword }) {
         const { quotes, pagination } = this.getQuotesBase({
             page,
@@ -233,6 +231,40 @@ class QuoteRepository {
             list,
             pagination,
         };
+    }
+
+    getQuotesBaseForExport({ tagIds }) {
+        const db = getDB();
+        let sql = "SELECT q.* FROM quotes q";
+        const params = [];
+
+        if (tagIds && tagIds.length > 0) {
+            const placeholders = tagIds.map(() => "?").join(",");
+            sql = `
+        SELECT q.* FROM quotes q
+        JOIN quote_tags qt ON q.id = qt.quote_id
+        WHERE qt.tag_id IN (${placeholders})
+      `;
+            params.push(...tagIds);
+            sql += ` GROUP BY q.id HAVING COUNT(DISTINCT qt.tag_id) = ${tagIds.length}`;
+        }
+
+        sql += " ORDER BY q.updated_at DESC";
+        return db.prepare(sql).all(...params);
+    }
+
+    getQuotesWithTagsForExport({ tagIds }) {
+        const quotes = this.getQuotesBaseForExport({ tagIds });
+        if (quotes.length === 0) return [];
+
+        const ids = quotes.map((q) => q.id);
+        const tagsMap = this.getTagsForQuotes(ids);
+
+        return quotes.map((quote) => ({
+            content: quote.content,
+            tags: tagsMap.get(quote.id) || [],
+            updatedAt: quote.updated_at,
+        }));
     }
 }
 

@@ -5,15 +5,17 @@ import { type Tag as TagType } from '../../types';
 import Tag from '../Tag';
 import { useAppStore } from '../../store/useAppStore';
 import { useDebounce } from '../../hooks/useDebounce';
-import AddIcon from '../SvgIcon/AddIcon';
+import { AddIcon } from '../SvgIcon';
 import Button from '../Button';
+
+export type TagSelectorAction = 'ADD' | 'SEARCH' | 'EXPORT';
 
 interface TagSelectorProps {
   selectedTags: TagType[];
   onSelectedTagsChange: (tags: TagType[]) => void;
   newTagNames?: string[];
   onNewTagNamesChange?: (names: string[]) => void;
-  showCreate?: boolean;
+  action?: TagSelectorAction;
   onClose: () => void;
 }
 
@@ -22,7 +24,7 @@ export default function TagSelector({
   onSelectedTagsChange,
   newTagNames = [],
   onNewTagNamesChange,
-  showCreate = true,
+  action = 'ADD',
   onClose,
 }: TagSelectorProps) {
   const [inputValue, setInputValue] = useState('');
@@ -90,7 +92,7 @@ export default function TagSelector({
       return;
     }
 
-    if (!showCreate) {
+    if (action !== 'ADD') {
       setInputValue('');
       return;
     }
@@ -121,7 +123,7 @@ export default function TagSelector({
       <View className="base-input-section">
         <View className="base-input">
           <Input
-            placeholder={showCreate ? '搜索或输入新标签...' : '搜索标签...'}
+            placeholder={action === 'ADD' ? '搜索或输入新标签...' : '搜索标签...'}
             adjustPosition
             cursorSpacing={200}
             value={inputValue}
@@ -130,7 +132,7 @@ export default function TagSelector({
           />
         </View>
 
-        {showCreate && <AddIcon onClick={handleAddNewTag} size={1.6} />}
+        {action === 'ADD' && <AddIcon onClick={handleAddNewTag} size={1.6} />}
       </View>
 
       {/* 所有标签 */}
@@ -143,11 +145,16 @@ export default function TagSelector({
         })}
         {filteredTags.length === 0 && (
           <Text className="tag-empty-text">
-            {showCreate ? '无匹配标签，点击 + 添加新标签' : '无匹配标签'}
+            {action === 'ADD' ? '无匹配标签，点击 + 添加新标签' : '无匹配标签'}
           </Text>
         )}
       </View>
-      {showCreate && <Button onClick={onClose}>保存{total !== 0 && ` (${total})`}</Button>}
+      {action !== 'SEARCH' && (
+        <Button onClick={onClose}>
+          {action === 'ADD' ? '保存' : '导出'}
+          {total !== 0 && ` (${total})`}
+        </Button>
+      )}
     </View>
   );
 }

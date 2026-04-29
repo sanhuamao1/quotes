@@ -7,8 +7,7 @@ import { createQuote, updateQuote } from '../../../request';
 import { useAddQuoteStore } from '../../../store/useAddQuoteStore';
 import { useAppStore } from '../../../store/useAppStore';
 import './index.scss';
-import TagIcon from '../../../components/SvgIcon/TagIcon';
-import SaveIcon from '../../../components/SvgIcon/SaveIcon';
+import { TagIcon, SaveIcon } from '../../../components/SvgIcon';
 
 interface RecordDrawerProps {
   onClose: () => void;
@@ -85,6 +84,7 @@ export default function RecordDrawer({ onClose, onRefresh }: RecordDrawerProps) 
           onSelectedTagsChange={updateSelectedTags}
           newTagNames={newTagNames}
           onNewTagNamesChange={updateNewTagNames}
+          action="ADD"
           onClose={() => setShowTagSelector(false)}
         />
       </Modal>

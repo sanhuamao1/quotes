@@ -1,0 +1,27 @@
+@use 'varieties' as *;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin card {
+  background: $card-color;
+  border: 2rpx solid $border-color;
+  border-radius: 24rpx;
+}
+
+@mixin pill {
+  border-radius: 99rpx;
+  flex-shrink: 0;
+}
+
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}

@@ -1,10 +1,51 @@
+@use '../../style/varieties' as *;
+
 .profile-page {
   min-height: 100vh;
   background: #faf8f5;
   padding: 32px;
-}
 
-.title {
-  font-size: 32px;
-  color: #333;
+  .title {
+    font-size: 32px;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  .config-section {
+    margin-top: 32px;
+  }
+
+  .config-list {
+    background: $card-color;
+    border: 2rpx solid $border-color;
+    border-radius: 24rpx;
+    overflow: hidden;
+  }
+
+  .config-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32rpx 32rpx;
+    border-bottom: 2rpx solid $border-color;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:active {
+      background: $primary-light;
+    }
+  }
+
+  .config-item__label {
+    font-size: $base-size;
+    color: $text-primary;
+  }
+
+  .config-item__arrow {
+    font-size: 40rpx;
+    color: $text-muted;
+    line-height: 1;
+  }
 }
